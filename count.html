@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match the Numbers to the Count</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Comic Neue', cursive;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Prevent scrolling due to canvas */
+            position: relative;
+        }
+
+        /* Canvas for interactive background */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Place behind the game container */
+        }
+
+        .game-container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1; /* Ensure game container is above the canvas */
+        }
+
+        h1 {
+            color: #ff6f61;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .numbers-container, .counts-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .number, .count {
+            padding: 10px 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 2px solid #333;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .number {
+            background-color: #ffcc00;
+            color: #000;
+        }
+
+        .count {
+            background-color: #a6c1ee;
+            color: #000;
+        }
+
+        .number.dragging {
+            opacity: 0.5;
+        }
+
+        .count.hovered {
+            background-color: #ff6f61;
+        }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Canvas for interactive background -->
+    <canvas id="backgroundCanvas"></canvas>
+
+    <div class="game-container">
+        <h1>Match the Numbers to the Count</h1>
+        <div class="numbers-container">
+            <div class="number" draggable="true" data-value="1">1</div>
+            <div class="number" draggable="true" data-value="2">2</div>
+            <div class="number" draggable="true" data-value="3">3</div>
+            <div class="number" draggable="true" data-value="4">4</div>
+            <div class="number" draggable="true" data-value="5">5</div>
+            <div class="number" draggable="true" data-value="6">6</div>
+            <div class="number" draggable="true" data-value="7">7</div>
+            <div class="number" draggable="true" data-value="8">8</div>
+            <div class="number" draggable="true" data-value="9">9</div>
+            <div class="number" draggable="true" data-value="10">10</div>
+        </div>
+        <div class="counts-container" id="countsContainer">
+            <!-- Counts will be dynamically generated here -->
+        </div>
+        <p id="feedback"></p>
+    </div>
+
+    <script>
+        // DOM Elements
+        const numbers = document.querySelectorAll('.number');
+        const countsContainer = document.getElementById('countsContainer');
+        const feedback = document.getElementById('feedback');
+
+        let draggedNumber = null;
+        let matchedCount = 0; // Track how many counts have been matched
+
+        // Emojis for counts
+        const emojis = ["🍎", "🍌", "🍇", "🍓", "🍒", "🍍", "🥭", "🍑", "🍉", "🍊"];
+
+        // Function to generate random counts
+        function generateRandomCounts() {
+            countsContainer.innerHTML = ""; // Clear previous counts
+            const usedNumbers = new Set(); // To avoid duplicate counts
+
+            while (usedNumbers.size < 5) {
+                const randomNumber = Math.floor(Math.random() * 10) + 1; // Random number between 1 and 10
+                if (!usedNumbers.has(randomNumber)) {
+                    usedNumbers.add(randomNumber);
+                    const countDiv = document.createElement('div');
+                    countDiv.className = 'count';
+                    countDiv.dataset.value = randomNumber;
+                    countDiv.textContent = emojis[randomNumber - 1].repeat(randomNumber);
+                    countsContainer.appendChild(countDiv);
+                }
+            }
+
+            // Reattach event listeners for new counts
+            countsContainer.querySelectorAll('.count').forEach(count => {
+                count.addEventListener('dragover', dragOver);
+                count.addEventListener('dragenter', dragEnter);
+                count.addEventListener('dragleave', dragLeave);
+                count.addEventListener('drop', drop);
+            });
+        }
+
+        // Play joyful sound
+        function playJoyfulSound() {
+            const audio = new Audio('joyful-sound.mp3'); // Add your joyful sound file
+            audio.play();
+        }
+
+        // Reset the game for the next iteration
+        function resetGame() {
+            matchedCount = 0; // Reset matched count
+            numbers.forEach(number => (number.style.display = 'block')); // Show all numbers
+            generateRandomCounts(); // Generate new counts
+            feedback.textContent = ''; // Clear feedback
+        }
+
+        // Add event listeners for drag and drop
+        numbers.forEach(number => {
+            number.addEventListener('dragstart', dragStart);
+            number.addEventListener('dragend', dragEnd);
+        });
+
+        // Drag and Drop Functions
+        function dragStart() {
+            draggedNumber = this;
+            this.classList.add('dragging');
+            setTimeout(() => (this.style.display = 'none'), 0);
+        }
+
+        function dragEnd() {
+            this.classList.remove('dragging');
+            this.style.display = 'block';
+            draggedNumber = null;
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+        }
+
+        function dragEnter() {
+            this.classList.add('hovered');
+        }
+
+        function dragLeave() {
+            this.classList.remove('hovered');
+        }
+
+        function drop() {
+            this.classList.remove('hovered');
+            if (draggedNumber.dataset.value === this.dataset.value) {
+                this.style.backgroundColor = '#4caf50';
+                this.textContent = `${draggedNumber.textContent} ✅`;
+                feedback.textContent = 'Correct! 🎉';
+                feedback.style.color = '#4caf50';
+                draggedNumber.style.display = 'none';
+                matchedCount++;
+
+                // Check if all counts have been matched
+                if (matchedCount === 5) {
+                    playJoyfulSound(); // Play joyful sound
+                    setTimeout(() => {
+                        resetGame(); // Reset the game for the next iteration
+                    }, 1000); // Wait 1 second before resetting
+                }
+            } else {
+                feedback.textContent = 'Incorrect! Try again.';
+                feedback.style.color = '#ff0000';
+            }
+        }
+
+        // Initialize the game with random counts
+        generateRandomCounts();
+
+        // Interactive Background using Canvas
+        const canvas = document.getElementById('backgroundCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 100;
+
+        class Particle {
+            constructor(x, y, size, color, velocity) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.color = color;
+                this.velocity = velocity;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+
+                // Bounce off the edges
+                if (this.x + this.size > canvas.width || this.x - this.size < 0) {
+                    this.velocity.x = -this.velocity.x;
+                }
+                if (this.y + this.size > canvas.height || this.y - this.size < 0) {
+                    this.velocity.y = -this.velocity.y;
+                }
+
+                this.draw();
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < particleCount; i++) {
+                const size = Math.random() * 5 + 2;
+                const x = Math.random() * (canvas.width - size * 2) + size;
+                const y = Math.random() * (canvas.height - size * 2) + size;
+                const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
+                const velocity = {
+                    x: (Math.random() - 0.5) * 2,
+                    y: (Math.random() - 0.5) * 2,
+                };
+                particles.push(new Particle(x, y, size, color, velocity));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => particle.update());
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+        // Resize canvas on window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

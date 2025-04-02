@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Attendance System</title>
+    <style>
+        /* Your existing CSS styles */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Staff Attendance System</h1>
+        
+        <div class="form-group">
+            <label for="semester">Select Semester:</label>
+            <select id="semester">
+                <option value="">-- Select Semester --</option>
+                <option value="sem1">Semester 1</option>
+                <option value="sem2">Semester 2</option>
+                <option value="sem3">Semester 3</option>
+                <option value="sem4">Semester 4</option>
+            </select>
+        </div>
+        
+        <div class="form-group hidden" id="courseGroup">
+            <label for="course">Select Course:</label>
+            <select id="course">
+                <option value="">-- Select Course --</option>
+                <!-- Courses will be loaded dynamically -->
+            </select>
+        </div>
+        
+        <div id="studentList" class="hidden">
+            <div class="header-info">
+                <div id="classInfo"></div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Roll No.</th>
+                        <th>Student Name</th>
+                        <th>Attendance</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                    <!-- Students will be loaded here -->
+                </tbody>
+            </table>
+            
+            <div class="submit-container">
+                <button id="submitAttendance">Submit Attendance</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, updateDoc, doc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+        import { firebaseConfig } from "./firebase-config.js";
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // When semester is changed, load its courses from Firestore
+        document.getElementById('semester').addEventListener('change', async function() {
+            const semester = this.value;
+            const courseSelect = document.getElementById('course');
+            const courseGroup = document.getElementById('courseGroup');
+            const studentList = document.getElementById('studentList');
+            
+            // Clear previous courses and hide student list
+            courseSelect.innerHTML = '<option value="">-- Select Course --</option>';
+            courseGroup.classList.add('hidden');
+            studentList.classList.add('hidden');
+            
+            if (semester) {
+                try {
+                    // Query the entire collection for the selected semester
+                    const semCollectionRef = collection(db, semester);
+                    const semQuerySnapshot = await getDocs(semCollectionRef);
+                    
+                    if (semQuerySnapshot.empty) {
+                        throw new Error(`No documents found for ${semester}`);
+                    }
+                    
+                    // Populate courses dropdown using the fields from the fetched documents
+                    semQuerySnapshot.forEach(docSnap => {
+                        const courseData = docSnap.data();
+                        Object.keys(courseData).forEach(courseId => {
+                            const option = document.createElement('option');
+                            option.value = courseId;
+                            option.textContent = courseId.replace(/_/g, ' ');
+                            courseSelect.appendChild(option);
+                        });
+                    });
+                    courseGroup.classList.remove('hidden');
+                } catch (error) {
+                    console.error("Error fetching courses:", error);
+                    alert("Failed to load courses. Please try again.");
+                }
+            }
+        });
+
+        // When course is chosen, load students (only those enrolled in the selected semester/course)
+        document.getElementById('course').addEventListener('change', async function() {
+            const courseId = this.value;
+            const studentList = document.getElementById('studentList');
+            const studentTableBody = document.getElementById('studentTableBody');
+            const classInfo = document.getElementById('classInfo');
+            const semester = document.getElementById('semester').value;
+            
+            // Clear previous students and hide the list
+            studentTableBody.innerHTML = '';
+            studentList.classList.add('hidden');
+            
+            if (courseId) {
+                try {
+                    // Display class info
+                    const semesterText = document.getElementById('semester').options[document.getElementById('semester').selectedIndex].text;
+                    const courseText = this.options[this.selectedIndex].text;
+                    classInfo.innerHTML = `<strong>Class:</strong> ${semesterText} - ${courseText}`;
+                    
+                    // Query the "student" collection where the student is enrolled in the selected semester/course.
+                    const studentsRef = collection(db, "student");
+                    const studentsQuery = query(studentsRef, where(`${semester}.${courseId}`, ">=", 0));
+                    const studentsSnapshot = await getDocs(studentsQuery);
+                    
+                    if (studentsSnapshot.empty) {
+                        studentTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">No students found for this course.</td></tr>';
+                    } else {
+                        studentsSnapshot.forEach(docSnap => {
+                            const studentData = docSnap.data();
+                            // Only show students who have a record of the given semester/course field
+                            if (studentData[semester] && studentData[semester][courseId] !== undefined) {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${docSnap.id}</td>
+                                    <td>${studentData.name || 'Unknown'}</td>
+                                    <td>
+                                        <button class="attendance-btn neutral" data-student="${docSnap.id}" data-status="neutral">Not Marked</button>
+                                        <button class="attendance-btn present" data-student="${docSnap.id}" data-status="present">Present</button>
+                                        <button class="attendance-btn absent" data-student="${docSnap.id}" data-status="absent">Absent</button>
+                                    </td>
+                                `;
+                                studentTableBody.appendChild(row);
+                            }
+                        });
+                        // If no student row was added
+                        if (studentTableBody.children.length === 0) {
+                            studentTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">No students enrolled in this course.</td></tr>';
+                        } else {
+                            setupAttendanceButtons();
+                        }
+                    }
+                    studentList.classList.remove('hidden');
+                } catch (error) {
+                    console.error("Error fetching students:", error);
+                    alert("Failed to load students. Please try again.");
+                }
+            }
+        });
+
+        // Set up attendance buttons so that, when pressed, they reflect the chosen status
+        function setupAttendanceButtons() {
+            const buttons = document.querySelectorAll('.attendance-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const studentId = this.getAttribute('data-student');
+                    const status = this.getAttribute('data-status');
+                    // Reset buttons for same student
+                    const studentButtons = document.querySelectorAll(`.attendance-btn[data-student="${studentId}"]`);
+                    studentButtons.forEach(btn => {
+                        btn.style.display = 'inline-block';
+                    });
+                    // If present or absent is clicked, hide neutral and the undo option
+                    if (status === 'present' || status === 'absent') {
+                        this.style.display = 'inline-block';
+                        document.querySelector(`.attendance-btn[data-student="${studentId}"][data-status="neutral"]`).style.display = 'none';
+                        document.querySelector(`.attendance-btn[data-student="${studentId}"][data-status="${status === 'present' ? 'absent' : 'present'}"]`).style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Submit attendance: update both the student record and the semester document accordingly.
+        document.getElementById('submitAttendance').addEventListener('click', async function() {
+            const semester = document.getElementById('semester').value;
+            const course = document.getElementById('course').value;
+            
+            if (!semester || !course) {
+                alert('Please select both semester and course before submitting attendance.');
+                return;
+            }
+            
+            try {
+                // Collect attendance status for each student from the table
+                const attendanceData = [];
+                const studentRows = document.querySelectorAll('#studentTableBody tr');
+                let hasUnmarked = false;
+                
+                studentRows.forEach(row => {
+                    const studentId = row.cells[0].textContent;
+                    // Using the displayed status of the "present" button as a check
+                    const presentBtn = row.querySelector('.attendance-btn[data-status="present"]');
+                    const absentBtn = row.querySelector('.attendance-btn[data-status="absent"]');
+                    let status = 'Not Marked';
+                    if (presentBtn && window.getComputedStyle(presentBtn).display !== 'none') {
+                        status = 'Present';
+                    } else if (absentBtn && window.getComputedStyle(absentBtn).display !== 'none') {
+                        status = 'Absent';
+                    }
+                    if (status === 'Not Marked') {
+                        hasUnmarked = true;
+                    }
+                    attendanceData.push({ studentId, status });
+                });
+                
+                if (hasUnmarked) {
+                    const cont = window.confirm('Some students are not marked. Do you want to continue?');
+                    if (!cont) return;
+                }
+                
+                // Disable button & show loading state
+                const submitButton = document.getElementById('submitAttendance');
+                submitButton.textContent = 'Submitting...';
+                submitButton.disabled = true;
+                
+                // Update each student record based on marked attendance.
+                for (const record of attendanceData) {
+                    if (record.status === 'Not Marked') continue;
+                    
+                    try {
+                        const studentRef = doc(db, "student", record.studentId);
+                        const updateData = {};
+                        if (record.status === 'Present') {
+                            updateData[`${semester}.${course}.present`] = increment(1);
+                        }
+                        updateData[`${semester}.${course}.total`] = increment(1);
+                        await updateDoc(studentRef, updateData);
+                        console.log(`Updated attendance for student ${record.studentId}`);
+                    } catch (error) {
+                        console.error(`Error updating student ${record.studentId}:`, error);
+                        throw error;
+                    }
+                }
+                
+                // Update the semester document (for total class count for this course)
+                try {
+                    const semCollectionRef = collection(db, semester);
+                    const semQuerySnapshot = await getDocs(semCollectionRef);
+                    if (!semQuerySnapshot.empty) {
+                        const semDocRef = semQuerySnapshot.docs[0].ref; // Use the first document in the collection
+                        const semUpdate = {};
+                        semUpdate[course] = increment(1);  // Increase total classes for course in semester
+                        await updateDoc(semDocRef, semUpdate);
+                        console.log('Semester document updated');
+                    }
+                } catch (error) {
+                    console.error('Error updating semester document:', error);
+                    throw error;
+                }
+                
+                alert('Attendance submitted successfully!');
+                // Optionally, clear selections or refresh UI; here we hide course & student list.
+                document.getElementById('semester').value = '';
+                document.getElementById('course').value = '';
+                document.getElementById('courseGroup').classList.add('hidden');
+                document.getElementById('studentList').classList.add('hidden');
+                
+            } catch (error) {
+                console.error("Error submitting attendance:", error);
+                alert(`Failed to submit attendance: ${error.message}`);
+            } finally {
+                const submitButton = document.getElementById('submitAttendance');
+                submitButton.textContent = 'Submit Attendance';
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty - Manage Live Sessions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: linear-gradient(135deg, #ffffff, #f0f0f0); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: auto; }
+    .bubbles { position: absolute; width: 100%; height: 100%; overflow: hidden; z-index: 0; }
+    .bubbles span { position: absolute; background: rgba(0, 0, 0, 0.05); border-radius: 50%; animation: float 10s infinite ease-in-out; }
+    @keyframes float { 0% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-20px) translateX(20px); } 100% { transform: translateY(0) translateX(0); } }
+    .container { position: relative; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; text-align: center; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); border: 1px solid rgba(0, 0, 0, 0.1); z-index: 1; width: 500px; animation: slideIn 0.8s ease-out; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+    h2 { color: #333; margin-bottom: 20px; text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+    .form-group { margin: 20px 0; opacity: 0; animation: fadeInUp 0.5s ease forwards; animation-delay: calc(0.1s * var(--i)); }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #444; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 14px; transition: border-color 0.3s ease; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #00b4db; outline: none; }
+    .button { padding: 15px 30px; font-size: 16px; border: none; border-radius: 50px; cursor: pointer; margin: 10px; transition: all 0.3s ease; color: white; }
+    .go-live { background: linear-gradient(135deg, #00b4db, #0083b0); box-shadow: 0 0 20px rgba(0, 180, 219, 0.5); }
+    .go-live:hover { transform: scale(1.1); box-shadow: 0 0 40px rgba(0, 180, 219, 0.8); }
+    .save-button { background: linear-gradient(135deg, #00b4db, #0083b0); box-shadow: 0 0 20px rgba(0, 180, 219, 0.5); }
+    .save-button:hover { transform: scale(1.1); box-shadow: 0 0 40px rgba(0, 180, 219, 0.8); }
+    .delete-button { background: linear-gradient(135deg, #ff416c, #ff4b2b); box-shadow: 0 0 20px rgba(255, 65, 108, 0.5); }
+    .delete-button:hover { transform: scale(1.1); box-shadow: 0 0 40px rgba(255, 65, 108, 0.8); }
+    .extra-button { background: linear-gradient(135deg, #00b4db, #0083b0); box-shadow: 0 0 20px rgba(0, 180, 219, 0.5); }
+    .extra-button:hover { transform: scale(1.1); box-shadow: 0 0 40px rgba(0, 180, 219, 0.8); }
+    .description { margin-top: 20px; color: #333; font-size: 14px; text-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+    .saved-meetings { margin-top: 20px; text-align: left; max-height: 200px; overflow-y: auto; padding: 10px; background: rgba(255, 255, 255, 0.5); border-radius: 10px; }
+  </style>
+</head>
+<body>
+  <div class="bubbles" id="bubbles">
+    <span style="top: 10%; left: 20%; width: 100px; height: 100px;"></span>
+    <span style="top: 50%; left: 70%; width: 150px; height: 150px;"></span>
+    <span style="top: 80%; left: 40%; width: 120px; height: 120px;"></span>
+    <span style="top: 30%; left: 90%; width: 80px; height: 80px;"></span>
+  </div>
+
+  <div class="container">
+    <h2>Manage LIVE Meet Sessions</h2>
+    <div class="form-group" style="--i: 1;">
+      <label for="facultyName">Faculty Name</label>
+      <input type="text" id="facultyName" placeholder="Enter your name" required>
+    </div>
+    <div class="form-group" style="--i: 2;">
+      <label for="classGrade">Class (1-12)</label>
+      <select id="classGrade" required>
+        <option value="" disabled selected>Select a class</option>
+        <option value="1">Class 1</option>
+        <option value="2">Class 2</option>
+        <option value="3">Class 3</option>
+        <option value="4">Class 4</option>
+        <option value="5">Class 5</option>
+        <option value="6">Class 6</option>
+        <option value="7">Class 7</option>
+        <option value="8">Class 8</option>
+        <option value="9">Class 9</option>
+        <option value="10">Class 10</option>
+        <option value="11">Class 11</option>
+        <option value="12">Class 12</option>
+      </select>
+    </div>
+    <div class="form-group" style="--i: 3;">
+      <label for="topic">Topic</label>
+      <input type="text" id="topic" placeholder="Enter the topic" required>
+    </div>
+    <div class="form-group" style="--i: 4;">
+      <label for="description">Description</label>
+      <textarea id="description" placeholder="Enter a brief description" rows="4" required></textarea>
+    </div>
+    <div class="form-group" style="--i: 5;">
+      <label for="meetingLink">Meeting Link</label>
+      <input type="text" id="meetingLink" placeholder="Paste the Google Meet link here" required>
+    </div>
+    <button class="button go-live" onclick="goLive()">Go Live</button>
+    <button class="button save-button" onclick="saveMeeting()">Save Meeting</button>
+    <button class="button delete-button" onclick="deleteHistory()">Delete History</button>
+    <button class="button extra-button" onclick="viewSavedMeetings()">View Saved Meetings</button>
+    <button class="button extra-button" onclick="copyAllLinks()">Copy All Links</button>
+    <div class="description">
+      Click "Go Live" to open a  tab. Paste the link above and save it.
+    </div>
+    <div class="saved-meetings" id="savedMeetings" style="display: none;"></div>
+  </div>
+
+  <script>
+    const bubbles = document.getElementById('bubbles');
+    document.addEventListener('mousemove', (e) => {
+      const x = e.clientX;
+      const y = e.clientY;
+      bubbles.querySelectorAll('span').forEach((bubble) => {
+        const bubbleX = bubble.offsetLeft + bubble.offsetWidth / 2;
+        const bubbleY = bubble.offsetTop + bubble.offsetHeight / 2;
+        const distance = Math.sqrt((x - bubbleX) ** 2 + (y - bubbleY) ** 2);
+        if (distance < 100) {
+          const force = (100 - distance) / 10;
+          const angle = Math.atan2(y - bubbleY, x - bubbleX);
+          bubble.style.transform = `translate(${Math.cos(angle) * force}px, ${Math.sin(angle) * force}px)`;
+        }
+      });
+    });
+
+    function goLive() {
+      window.open("https://meet.google.com/new", "_blank");
+    }
+
+    function saveMeeting() {
+      const facultyName = document.getElementById('facultyName').value;
+      const classGrade = document.getElementById('classGrade').value;
+      const topic = document.getElementById('topic').value;
+      const description = document.getElementById('description').value;
+      const meetingLink = document.getElementById('meetingLink').value;
+
+      if (!facultyName || !classGrade || !topic || !description || !meetingLink) {
+        alert('Please fill in all fields.');
+        return;
+      }
+
+      const meetingDetails = { facultyName, classGrade, topic, description, meetingLink, createdAt: new Date().toISOString() };
+      let meetings = JSON.parse(localStorage.getItem('meetings')) || [];
+      meetings.push(meetingDetails);
+      localStorage.setItem('meetings', JSON.stringify(meetings));
+
+      alert('Meeting saved successfully!');
+      clearForm();
+    }
+
+    function deleteHistory() {
+      if (confirm('Are you sure you want to delete all meeting history?')) {
+        localStorage.removeItem('meetings');
+        document.getElementById('savedMeetings').style.display = 'none';
+        alert('Meeting history deleted!');
+      }
+    }
+
+    function viewSavedMeetings() {
+      const savedMeetingsDiv = document.getElementById('savedMeetings');
+      const meetings = JSON.parse(localStorage.getItem('meetings')) || [];
+      savedMeetingsDiv.style.display = 'block';
+      if (meetings.length === 0) {
+        savedMeetingsDiv.innerHTML = '<p>No saved meetings.</p>';
+      } else {
+        savedMeetingsDiv.innerHTML = meetings.map(m => `<p><strong>${m.topic}</strong> (Class ${m.classGrade}) - ${m.meetingLink}</p>`).join('');
+      }
+    }
+
+    function copyAllLinks() {
+      const meetings = JSON.parse(localStorage.getItem('meetings')) || [];
+      if (meetings.length === 0) {
+        alert('No meetings to copy.');
+        return;
+      }
+      const links = meetings.map(m => m.meetingLink).join('\n');
+      navigator.clipboard.writeText(links).then(() => alert('All meeting links copied to clipboard!'));
+    }
+
+    function clearForm() {
+      document.getElementById('facultyName').value = '';
+      document.getElementById('classGrade').value = '';
+      document.getElementById('topic').value = '';
+      document.getElementById('description').value = '';
+      document.getElementById('meetingLink').value = '';
+    }
+  </script>
+</body>
+</html>

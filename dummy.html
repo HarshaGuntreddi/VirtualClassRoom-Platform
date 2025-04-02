@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Plans</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin: 0;
+            color: #fff;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #ddd;
+        }
+
+        /* Subscription Container */
+        .subscription-container {
+            display: flex;
+            gap: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Subscription Box Styles */
+        .subscription-box {
+            background: linear-gradient(135deg, #ffffff, #f9f9f9);
+            border-radius: 15px;
+            padding: 25px;
+            width: 250px;
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .subscription-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .subscription-box h3 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #1e3c72;
+        }
+
+        .subscription-box p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .subscription-box button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .subscription-box button:hover {
+            background-color: #218838;
+        }
+
+        /* Popup Styles */
+        .popup {
+            display: none;
+            position: absolute;
+            top: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            width: 280px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            color: #333;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .subscription-box:hover .popup {
+            display: block;
+        }
+
+        .popup ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .popup ul li {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .subscription-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .subscription-box {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Comprehensive Learning Programs</h1>
+        <p>Become lifelong learners with engaging video lessons and personalised learning journeys.</p>
+    </div>
+
+    <div class="subscription-container">
+        <!-- Basic Plan -->
+        <div class="subscription-box">
+            <h3>Basic Plan</h3>
+            <p>Access to 10 files per month</p>
+            <button>Subscribe</button>
+            <div class="popup">
+                <p><strong>What's Included:</strong></p>
+                <ul>
+                    <li>Access to 10 educational files per month.</li>
+                    <li>Engaging video lessons for Classes 4-10.</li>
+                    <li>Personalised learning journeys.</li>
+                    <li>Limited access to quizzes and practice tests.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Standard Plan -->
+        <div class="subscription-box">
+            <h3>Standard Plan</h3>
+            <p>Access to 50 files per month</p>
+            <button>Subscribe</button>
+            <div class="popup">
+                <p><strong>What's Included:</strong></p>
+                <ul>
+                    <li>Access to 50 educational files per month.</li>
+                    <li>Video lessons for Classes 4-12 and competitive exams.</li>
+                    <li>Personalised online tutoring with a two-teacher model.</li>
+                    <li>Access to advanced quizzes and practice tests.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Premium Plan -->
+        <div class="subscription-box">
+            <h3>Premium Plan</h3>
+            <p>Unlimited access to all files</p>
+            <button>Subscribe</button>
+            <div class="popup">
+                <p><strong>What's Included:</strong></p>
+                <ul>
+                    <li>Unlimited access to all educational files.</li>
+                    <li>Comprehensive video lessons for all classes and competitive exams.</li>
+                    <li>Personalised learning app with real-time doubt resolution.</li>
+                    <li>Access to live classes and mentorship programs.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

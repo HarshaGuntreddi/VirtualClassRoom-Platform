@@ -1,0 +1,324 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Alphabets - Kids Learning</title>
+        <meta name="description" content="Learn Alphabets with Fun and Interactive Activities">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="assets/fonts/stylesheet.css">
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <!-- Add Google Font for Kid-Friendly Look -->
+        <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Fredoka+One&display=swap" rel="stylesheet">
+        <style>
+            /* Global Styles */
+            body {
+                font-family: 'Comic Neue', cursive;
+                color: #333;
+                margin: 0;
+                padding: 0;
+                position: relative; /* Ensure the background stays fixed */
+            }
+
+            /* Interactive Background */
+            body::before {
+                content: '';
+                position: fixed; /* Fixed to cover the entire viewport */
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee, #f6d365, #fda085);
+                background-size: 400% 400%;
+                animation: gradientBG 15s ease infinite;
+                z-index: -1; /* Ensure it stays behind the content */
+            }
+
+            @keyframes gradientBG {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+
+            /* Title and Button Alignment */
+            h1 {
+                text-align: center;
+                margin-top: 20px;
+                position: relative;
+                z-index: 1; /* Ensure it stays above the background */
+            }
+
+            .back-button {
+                display: block;
+                margin: 20px auto;
+                position: relative;
+                z-index: 1; /* Ensure it stays above the background */
+            }
+
+            /* Alphabets Grid */
+            .alphabets-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 20px;
+                padding: 20px;
+                max-width: 800px;
+                margin: 0 auto;
+                position: relative;
+                z-index: 1; /* Ensure it stays above the background */
+            }
+            .alphabet-card {
+                background-color: #fff;
+                border-radius: 10px;
+                padding: 20px;
+                text-align: center;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                cursor: pointer;
+                position: relative;
+            }
+            .alphabet-card:hover {
+                transform: scale(1.1); /* Pop effect */
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            }
+            .alphabet-card h2 {
+                font-size: 36px;
+                color: #ff6f61;
+                margin: 0;
+                transition: transform 0.3s ease;
+            }
+            .alphabet-card:hover h2 {
+                transform: scale(1.2); /* Pop effect for the letter */
+            }
+            .alphabet-card p {
+                font-size: 18px;
+                color: #333;
+                margin: 10px 0 0;
+            }
+            .alphabet-card img {
+                width: 80px;
+                height: 80px;
+                margin-top: 10px;
+                display: none; /* Hide by default */
+                animation: bounce 0.5s ease;
+            }
+
+            /* Pop-up Image */
+            .popup-image {
+                position: absolute;
+                top: -100px; /* Adjust as needed */
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100px;
+                height: 100px;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .alphabet-card:hover .popup-image {
+                opacity: 1; /* Show pop-up image on hover */
+            }
+
+           
+        </style>
+    </head>
+    <body>
+   
+
+        <!-- Alphabets Section -->
+        <section id="alphabets">
+            <h1 class="text-center">Learn the Alphabets</h1>
+            <div class="alphabets-grid">
+                <!-- Alphabet Cards -->
+                <div class="alphabet-card" data-letter="A" data-word="Apple" data-image="https://i.ibb.co/PsB7g9ch/abc.png">
+                    <h2>A</h2>
+                    <p>Apple</p>
+                    <img src="https://i.ibb.co/5NJs3n7/apple.png" alt="Apple" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="B" data-word="Ball" data-image="https://i.ibb.co/5xYPNdxR/number-blocks.png">
+                    <h2>B</h2>
+                    <p>Ball</p>
+                    <img src="https://i.ibb.co/tMGYDx81/beach-ball.png"  alt="Ball" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="C" data-word="Cat" data-image="https://i.ibb.co/PsB7g9ch/abc.png">
+                    <h2>C</h2>
+                    <p>Cat</p>
+                    <img src="https://i.ibb.co/BKGD8bV5/teacher.png"  alt="Cat" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="D" data-word="Dog" data-image="https://i.ibb.co/5xYPNdxR/number-blocks.png">
+                    <h2>D</h2>
+                    <p>Dog</p>
+                    <img src="https://i.ibb.co/cnypG9T/happy.png"  alt="Dog" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="E" data-word="Elephant" data-image="https://i.ibb.co/PsB7g9ch/abc.png">
+                    <h2>E</h2>
+                    <p>Elephant</p>
+                    <img src="https://i.ibb.co/cKfZ1vZF/elephant.png"  alt="Elephant" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="F" data-word="Fish" data-image="https://i.ibb.co/5xYPNdxR/number-blocks.png">
+                    <h2>F</h2>
+                    <p>Fish</p>
+                    <img src="https://i.ibb.co/4RWjK7mp/dolphin.png" alt="Fish" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="G" data-word="Giraffe" data-image="https://i.ibb.co/PsB7g9ch/abc.png">
+                    <h2>G</h2>
+                    <p>Giraffe</p>
+                    <img src="https://i.ibb.co/MkkFs068/giraffe.png"  alt="Giraffe" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="H" data-word="House" data-image="https://i.ibb.co/5xYPNdxR/number-blocks.png">
+                    <h2>H</h2>
+                    <p>House</p>
+                    <img src="https://i.ibb.co/XrrFrkv9/property.png"  alt="House" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="I" data-word="Ice Cream" data-image="https://i.ibb.co/PsB7g9ch/abc.png">
+                    <h2>I</h2>
+                    <p>Ice Cream</p>
+                    <img src="https://i.ibb.co/JWZ0qq41/ice-cream.png"  alt="Ice Cream" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="J" data-word="Jelly" data-image="https://i.ibb.co/5xYPNdxR/number-blocks.png">
+                    <h2>J</h2>
+                    <p>Jelly</p>
+                    <img src="https://i.ibb.co/WWhP9Fph/jelly.png"  alt="Jelly" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="K" data-word="Kite" data-image="https://i.ibb.co/PsB7g9ch/abc.png">
+                    <h2>K</h2>
+                    <p>Kite</p>
+                    <img src="https://i.ibb.co/GQJGVZkS/kites.png"  alt="Kite" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="L" data-word="Lion" data-image="https://i.ibb.co/5xYPNdxR/number-blocks.png">
+                    <h2>L</h2>
+                    <p>Lion</p>
+                    <img src="https://i.ibb.co/tTbmzhpF/hello.png"   alt="Lion" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="M" data-word="Monkey" data-image="https://i.ibb.co/PsB7g9ch/abc.png">
+                    <h2>M</h2>
+                    <p>Monkey</p>
+                    <img src="https://i.ibb.co/TMhJdy0s/playing.png" alt="Monkey" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="N" data-word="Nest" data-image="https://i.ibb.co/5xYPNdxR/number-blocks.png">
+                    <h2>N</h2>
+                    <p>Nest</p>
+                    <img src="https://i.ibb.co/N6mhyNcd/eggs.png" alt="Nest" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="O" data-word="Orange" data-image="https://i.ibb.co/PsB7g9ch/abc.png">
+                    <h2>O</h2>
+                    <p>Orange</p>
+                    <img src="https://i.ibb.co/5gsXt2Dt/orange.png" alt="Orange" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="P" data-word="Penguin" data-image="https://i.ibb.co/5xYPNdxR/number-blocks.png">
+                    <h2>P</h2>
+                    <p>Penguin</p>
+                    <img src="https://i.ibb.co/PZqC192K/penguin.png" alt="Penguin" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="Q" data-word="Queen" data-image="https://i.ibb.co/PsB7g9ch/abc.png">
+                    <h2>Q</h2>
+                    <p>Queen</p>
+                    <img src="https://i.ibb.co/B2f89Y8T/crown.png"  alt="Queen" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="R" data-word="Rabbit" data-image="https://i.ibb.co/5xYPNdxR/number-blocks.png">
+                    <h2>R</h2>
+                    <p>Rabbit</p>
+                    <img src="https://i.ibb.co/Ngc7JsBb/carrot.png"  alt="Rabbit" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="S" data-word="Sun" data-image="https://i.ibb.co/PsB7g9ch/abc.png">
+                    <h2>S</h2>
+                    <p>Sun</p>
+                    <img src="https://i.ibb.co/F4JVfgFW/sun.png"  alt="Sun" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="T" data-word="Tree" data-image="https://i.ibb.co/5xYPNdxR/number-blocks.png">
+                    <h2>T</h2>
+                    <p>Tree</p>
+                    <img src="https://i.ibb.co/fz7XQqcZ/tree.png"  alt="Tree" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="U" data-word="Umbrella" data-image="https://i.ibb.co/PsB7g9ch/abc.png">
+                    <h2>U</h2>
+                    <p>Umbrella</p>
+                    <img src="https://i.ibb.co/1GS7jwTm/umberlla.png"  alt="Umbrella" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="V" data-word="Van" data-image="https://i.ibb.co/5xYPNdxR/number-blocks.png">
+                    <h2>V</h2>
+                    <p>Van</p>
+                    <img src="https://i.ibb.co/F4vDtQp1/van.png" alt="Van" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="W" data-word="Whale" data-image="https://i.ibb.co/PsB7g9ch/abc.png">
+                    <h2>W</h2>
+                    <p>Whale</p>
+                    <img src="https://i.ibb.co/dJsqJwDK/whale.png" alt="Whale" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="X" data-word="Xylophone" data-image="https://i.ibb.co/5xYPNdxR/number-blocks.png">
+                    <h2>X</h2>
+                    <p>Xylophone</p>
+                    <img src="https://i.ibb.co/pvQK5jqV/xylophone.png" alt="Xylophone" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="Y" data-word="Yak" data-image="https://i.ibb.co/PsB7g9ch/abc.png">
+                    <h2>Y</h2>
+                    <p>Yak</p>
+                    <img src="https://i.ibb.co/Hf1z429z/bison.png" alt="Yak" class="popup-image">
+                </div>
+                <div class="alphabet-card" data-letter="Z" data-word="Zebra" data-image="https://i.ibb.co/5xYPNdxR/number-blocks.png">
+                    <h2>Z</h2>
+                    <p>Zebra</p>
+                    <img src="https://i.ibb.co/qL2QRWqb/zebra.png" alt="Zebra" class="popup-image">
+                </div>
+            </div>
+        </section>
+
+        <script>
+            // Check if the browser supports the SpeechSynthesis API
+            if (!window.speechSynthesis) {
+                console.error("Your browser does not support the SpeechSynthesis API.");
+            } else {
+                console.log("SpeechSynthesis API is supported.");
+            }
+
+            // Add hover effect to make the letter pop, speak, and show pop-up image
+            const alphabetCards = document.querySelectorAll('.alphabet-card');
+
+            alphabetCards.forEach(card => {
+                let isHovered = false; // Track hover state
+
+                card.addEventListener('mouseenter', () => {
+                    if (isHovered) return; // Prevent repeating audio
+                    isHovered = true;
+
+                    const letter = card.getAttribute('data-letter');
+                    const word = card.getAttribute('data-word');
+
+                    // Make the letter pop
+                    const letterElement = card.querySelector('h2');
+                    letterElement.style.transform = 'scale(1.2)';
+
+                    // Show pop-up image
+                    const popupImage = card.querySelector('.popup-image');
+                    popupImage.style.display = 'block';
+
+                    // Speak "A for Apple" using text-to-speech
+                    const utterance = new SpeechSynthesisUtterance(`${letter} for ${word}`);
+                    utterance.volume = 1; // Volume (0 to 1)
+                    utterance.rate = 1; // Speed (0.1 to 10)
+                    utterance.pitch = 1; // Pitch (0 to 2)
+
+                    // Add event listeners for debugging
+                    utterance.onstart = () => console.log("Speech started");
+                    utterance.onend = () => console.log("Speech ended");
+                    utterance.onerror = (event) => console.error("Speech error:", event.error);
+
+                    speechSynthesis.speak(utterance);
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    isHovered = false;
+
+                    // Reset the letter size
+                    const letterElement = card.querySelector('h2');
+                    letterElement.style.transform = 'scale(1)';
+
+                    // Hide pop-up image
+                    const popupImage = card.querySelector('.popup-image');
+                    popupImage.style.display = 'none';
+                });
+            });
+        </script>
+    </body>
+</html>

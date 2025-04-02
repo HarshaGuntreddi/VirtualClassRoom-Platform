@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Login - VCP</title>
+    <link rel="stylesheet" href="adminlogin.css" /> <!-- Reuse adminlogin.css -->
+    <link rel="icon" href="./IMG/computer.png" type="image/icon type" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="loginbg">
+        <div class="box signin">
+          <h2>User Login</h2>
+          <button class="signinbtn">Sign in</button>
+        </div>
+      </div>
+      <div class="formbx">
+        <!-- User Login Form -->
+        <div class="form signinform">
+          <form id="userLoginForm">
+            <h2>User Login</h2>
+            <h3>Sign In</h3>
+            <input type="email" id="userEmail" placeholder="Email" required />
+            <input type="password" id="userPassword" placeholder="Password" required />
+            <input type="submit" value="Login" />
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // User Login Form Submission
+      document.getElementById("userLoginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("userEmail").value;
+        const password = document.getElementById("userPassword").value;
+
+        // Retrieve users from localStorage (consistent with your system)
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const user = users.find((u) => u.email === email && u.password === password);
+
+        if (!user) {
+          alert("Invalid email or password!");
+          return;
+        }
+
+        alert("Login successful!");
+        document.getElementById("userLoginForm").reset();
+
+        // Store logged-in user in sessionStorage (consistent with your system)
+        sessionStorage.setItem("loggedInUser", JSON.stringify(user));
+
+        // Redirect to user profile page
+        window.location.href = "userprofile.html";
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 INSANE Student Dashboard 🔥</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js + GSAP + Matter.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+    <style>
+        /* 🔥 INSANE CSS 🔥 */
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #fd79a8;
+            --dark: #1e1e2a;
+            --light: #f5f6fa;
+            --neon: #00f2ff;
+            --glow: 0 0 15px var(--neon);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--dark);
+            color: white;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        /* 🌌 3D WebGL Background */
+        #webgl-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 🚀 Floating Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            background: rgba(30, 30, 42, 0.7);
+            z-index: 1000;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            transform-style: preserve-3d;
+            transform: translateZ(20px);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: var(--glow);
+        }
+
+        /* 🎮 Interactive Buttons */
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(108, 92, 231, 0.5);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* 🌀 Floating 3D Cards */
+        .card {
+            width: 280px;
+            height: 350px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) rotateX(5deg) scale(1.03);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ✨ Pixel Disintegration Effect */
+        .pixel-burst {
+            position: absolute;
+            pointer-events: none;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <!-- 🌌 3D WebGL Background -->
+    <canvas id="webgl-bg"></canvas>
+
+    <!-- 🚀 Floating Header -->
+    <header>
+        <a href="#" class="logo">VirtualClassRoom</a>
+        <nav class="navbar">
+            <a href="#" class="btn">Home</a>
+            <a href="#" class="btn">Join Live</a>
+            <a href="#" class="btn">About</a>
+            <a href="#" class="btn">Logout</a>
+        </nav>
+    </header>
+
+    <!-- 🎮 Main Content -->
+    <main>
+        <section class="hero">
+            <h1>🚀 Welcome to the <span class="neon-text">Future of Learning</span></h1>
+            <p>Experience education like never before with insane 3D effects!</p>
+            <button class="btn" id="explode-btn">Click for Magic ✨</button>
+        </section>
+
+        <!-- 🌀 Floating 3D Courses -->
+        <div class="courses-container" id="courses-container">
+            <!-- Courses loaded via JS -->
+        </div>
+    </main>
+
+    <!-- ✨ Pixel Burst Effect (Hidden) -->
+    <div id="pixel-burst-container"></div>
+
+    <!-- 🎛️ JavaScript -->
+    <script>
+        // 🌌 3D WebGL Background
+        const bgCanvas = document.getElementById('webgl-bg');
+        const renderer = new THREE.WebGLRenderer({ canvas: bgCanvas, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+
+        // 🌀 Floating Geometry
+        const geometry = new THREE.IcosahedronGeometry(10, 0);
+        const material = new THREE.MeshPhongMaterial({ 
+            color: 0x6c5ce7, 
+            wireframe: true,
+            emissive: 0xfd79a8,
+            emissiveIntensity: 0.5,
+            shininess: 100
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        // 💡 Dynamic Lighting
+        const light = new THREE.PointLight(0xffffff, 1, 100);
+        light.position.set(10, 10, 10);
+        scene.add(light);
+
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+
+        // 🎮 Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            mesh.rotation.x += 0.005;
+            mesh.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // 💥 Click Explosion Effect
+        document.addEventListener('click', (e) => {
+            createParticleExplosion(e.clientX, e.clientY);
+        });
+
+        function createParticleExplosion(x, y) {
+            const particles = [];
+            for (let i = 0; i < 100; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'pixel-burst';
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                particle.style.width = '5px';
+                particle.style.height = '5px';
+                particle.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                particle.style.position = 'absolute';
+                particle.style.borderRadius = '50%';
+                document.getElementById('pixel-burst-container').appendChild(particle);
+
+                particles.push({
+                    element: particle,
+                    x: x,
+                    y: y,
+                    angle: Math.random() * Math.PI * 2,
+                    speed: 2 + Math.random() * 5,
+                    life: 100
+                });
+            }
+
+            // 🎆 Animate Particles
+            function updateParticles() {
+                particles.forEach(p => {
+                    p.x += Math.cos(p.angle) * p.speed;
+                    p.y += Math.sin(p.angle) * p.speed;
+                    p.life--;
+
+                    p.element.style.left = `${p.x}px`;
+                    p.element.style.top = `${p.y}px`;
+                    p.element.style.opacity = p.life / 100;
+
+                    if (p.life <= 0) {
+                        p.element.remove();
+                    }
+                });
+
+                particles.filter(p => p.life > 0);
+                if (particles.length > 0) requestAnimationFrame(updateParticles);
+            }
+            updateParticles();
+        }
+
+        // 🌀 Physics-Based Floating Cards
+        const Engine = Matter.Engine,
+              Render = Matter.Render,
+              World = Matter.World,
+              Bodies = Matter.Bodies;
+
+        const engine = Engine.create();
+        const world = engine.world;
+
+        // 🎮 Render Physics World (Hidden)
+        const render = Render.create({
+            element: document.body,
+            engine: engine,
+            options: {
+                width: window.innerWidth,
+                height: window.innerHeight,
+                wireframes: false,
+                background: 'transparent'
+            }
+        });
+        Render.run(render);
+
+        // 🚀 GSAP Scroll Animations
+        gsap.from(".hero h1", { 
+            opacity: 0, 
+            y: 50, 
+            duration: 1, 
+            ease: "power3.out" 
+        });
+
+        gsap.from(".hero p", { 
+            opacity: 0, 
+            y: 30, 
+            delay: 0.3, 
+            duration: 1, 
+            ease: "power3.out" 
+        });
+
+        gsap.from(".btn", { 
+            opacity: 0, 
+            y: 20, 
+            delay: 0.6, 
+            duration: 1, 
+            stagger: 0.1, 
+            ease: "elastic.out(1, 0.5)" 
+        });
+    </script>
+</body>
+</html>

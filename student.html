@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student - Join Classes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 20px; font-family: 'Roboto', sans-serif; background: linear-gradient(135deg, #ffffff, #f0f0f0); }
+    .container { max-width: 900px; margin: 0 auto; }
+    h2 { color: #333; text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); text-align: center; animation: fadeIn 1s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    .class-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); border: 1px solid rgba(0, 0, 0, 0.1); opacity: 0; animation: cardFadeIn 0.5s ease forwards; animation-delay: calc(0.1s * var(--i)); }
+    @keyframes cardFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .class-card h3 { margin: 0 0 10px; color: #333; }
+    .class-card p { margin: 5px 0; color: #666; }
+    .join-button { padding: 10px 20px; font-size: 16px; border: none; border-radius: 50px; cursor: pointer; background: linear-gradient(135deg, #00b4db, #0083b0); color: white; transition: all 0.3s ease; box-shadow: 0 0 20px rgba(0, 180, 219, 0.5); }
+    .join-button:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(0, 180, 219, 0.8); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Available Classes</h2>
+    <div id="classList"></div>
+  </div>
+
+  <script>
+    function displayClasses() {
+      const classList = document.getElementById('classList');
+      const meetings = JSON.parse(localStorage.getItem('meetings')) || [];
+
+      if (meetings.length === 0) {
+        classList.innerHTML = '<p style="color: #333; text-align: center;">No classes available at the moment.</p>';
+        return;
+      }
+
+      classList.innerHTML = '';
+      meetings.forEach((meeting, index) => {
+        const card = document.createElement('div');
+        card.className = 'class-card';
+        card.style = `--i: ${index};`;
+        card.innerHTML = `
+          <h3>Class ${meeting.classGrade} - ${meeting.topic}</h3>
+          <p><strong>Faculty:</strong> ${meeting.facultyName}</p>
+          <p><strong>Description:</strong> ${meeting.description}</p>
+          <p><strong>Created:</strong> ${new Date(meeting.createdAt).toLocaleString()}</p>
+          <button class="join-button" onclick="joinClass('${meeting.meetingLink}')">Join Class</button>
+        `;
+        classList.appendChild(card);
+      });
+    }
+
+    function joinClass(meetingLink) {
+      window.open(meetingLink, "_blank");
+    }
+
+    window.onload = displayClasses;
+  </script>
+</body>
+</html>

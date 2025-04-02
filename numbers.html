@@ -1,0 +1,280 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Numbers - Kids Learning</title>
+        <meta name="description" content="Learn Numbers with Fun and Interactive Activities">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="assets/fonts/stylesheet.css">
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <!-- Add Google Font for Kid-Friendly Look -->
+        <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Fredoka+One&display=swap" rel="stylesheet">
+        <style>
+            /* Global Styles */
+            body {
+                font-family: 'Comic Neue', cursive;
+                color: #333;
+                margin: 0;
+                padding: 0;
+                position: relative; /* Ensure the background stays fixed */
+                overflow: hidden; /* Prevent scrolling */
+            }
+
+            /* Interactive Background */
+            body::before {
+                content: '';
+                position: fixed; /* Fixed to cover the entire viewport */
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee, #f6d365, #fda085);
+                background-size: 400% 400%;
+                animation: gradientBG 15s ease infinite;
+                z-index: -1; /* Ensure it stays behind the content */
+            }
+
+            @keyframes gradientBG {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+
+            /* Floating Numbers */
+            .floating-number {
+                position: absolute;
+                font-size: 24px;
+                font-weight: bold;
+                color: #ff6f61;
+                animation: float 5s infinite ease-in-out;
+                z-index: 0; /* Ensure it stays behind the content */
+            }
+
+            @keyframes float {
+                0% { transform: translateY(0) translateX(0); }
+                25% { transform: translateY(-20px) translateX(20px); }
+                50% { transform: translateY(20px) translateX(-20px); }
+                75% { transform: translateY(-20px) translateX(-20px); }
+                100% { transform: translateY(0) translateX(0); }
+            }
+
+            /* Title and Button Alignment */
+            h1 {
+                text-align: center;
+                margin-top: 20px;
+                position: relative;
+                z-index: 1; /* Ensure it stays above the background */
+            }
+
+            /* Numbers Grid */
+            .numbers-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 20px;
+                padding: 20px;
+                max-width: 800px;
+                margin: 0 auto;
+                position: relative;
+                z-index: 1; /* Ensure it stays above the background */
+            }
+            .number-card {
+                background-color: #fff;
+                border-radius: 10px;
+                padding: 20px;
+                text-align: center;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                cursor: pointer;
+                position: relative;
+            }
+            .number-card:hover {
+                transform: scale(1.1); /* Pop effect */
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            }
+            .number-card h2 {
+                font-size: 36px;
+                color: #ff6f61;
+                margin: 0;
+                transition: transform 0.3s ease;
+            }
+            .number-card:hover h2 {
+                transform: scale(1.2); /* Pop effect for the number */
+            }
+            .number-card p {
+                font-size: 18px;
+                color: #333;
+                margin: 10px 0 0;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Floating Numbers in the Background -->
+        <div id="floating-numbers"></div>
+
+        <!-- Numbers Section -->
+        <section id="numbers">
+            <h1 class="text-center">Learn Numbers (1 to 20)</h1>
+            <div class="numbers-grid">
+                <!-- Number Cards -->
+                <div class="number-card" data-number="1" data-word="One">
+                    <h2>1</h2>
+                    <p>One</p>
+                </div>
+                <div class="number-card" data-number="2" data-word="Two">
+                    <h2>2</h2>
+                    <p>Two</p>
+                </div>
+                <div class="number-card" data-number="3" data-word="Three">
+                    <h2>3</h2>
+                    <p>Three</p>
+                </div>
+                <div class="number-card" data-number="4" data-word="Four">
+                    <h2>4</h2>
+                    <p>Four</p>
+                </div>
+                <div class="number-card" data-number="5" data-word="Five">
+                    <h2>5</h2>
+                    <p>Five</p>
+                </div>
+                <div class="number-card" data-number="6" data-word="Six">
+                    <h2>6</h2>
+                    <p>Six</p>
+                </div>
+                <div class="number-card" data-number="7" data-word="Seven">
+                    <h2>7</h2>
+                    <p>Seven</p>
+                </div>
+                <div class="number-card" data-number="8" data-word="Eight">
+                    <h2>8</h2>
+                    <p>Eight</p>
+                </div>
+                <div class="number-card" data-number="9" data-word="Nine">
+                    <h2>9</h2>
+                    <p>Nine</p>
+                </div>
+                <div class="number-card" data-number="10" data-word="Ten">
+                    <h2>10</h2>
+                    <p>Ten</p>
+                </div>
+                <div class="number-card" data-number="11" data-word="Eleven">
+                    <h2>11</h2>
+                    <p>Eleven</p>
+                </div>
+                <div class="number-card" data-number="12" data-word="Twelve">
+                    <h2>12</h2>
+                    <p>Twelve</p>
+                </div>
+                <div class="number-card" data-number="13" data-word="Thirteen">
+                    <h2>13</h2>
+                    <p>Thirteen</p>
+                </div>
+                <div class="number-card" data-number="14" data-word="Fourteen">
+                    <h2>14</h2>
+                    <p>Fourteen</p>
+                </div>
+                <div class="number-card" data-number="15" data-word="Fifteen">
+                    <h2>15</h2>
+                    <p>Fifteen</p>
+                </div>
+                <div class="number-card" data-number="16" data-word="Sixteen">
+                    <h2>16</h2>
+                    <p>Sixteen</p>
+                </div>
+                <div class="number-card" data-number="17" data-word="Seventeen">
+                    <h2>17</h2>
+                    <p>Seventeen</p>
+                </div>
+                <div class="number-card" data-number="18" data-word="Eighteen">
+                    <h2>18</h2>
+                    <p>Eighteen</p>
+                </div>
+                <div class="number-card" data-number="19" data-word="Nineteen">
+                    <h2>19</h2>
+                    <p>Nineteen</p>
+                </div>
+                <div class="number-card" data-number="20" data-word="Twenty">
+                    <h2>20</h2>
+                    <p>Twenty</p>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            // Check if the browser supports the SpeechSynthesis API
+            if (!window.speechSynthesis) {
+                console.error("Your browser does not support the SpeechSynthesis API.");
+            } else {
+                console.log("SpeechSynthesis API is supported.");
+            }
+
+            // Add hover effect to make the number pop and speak
+            const numberCards = document.querySelectorAll('.number-card');
+
+            numberCards.forEach(card => {
+                let isHovered = false; // Track hover state
+
+                card.addEventListener('mouseenter', () => {
+                    if (isHovered) return; // Prevent repeating audio
+                    isHovered = true;
+
+                    const number = card.getAttribute('data-number');
+                    const word = card.getAttribute('data-word');
+
+                    // Make the number pop
+                    const numberElement = card.querySelector('h2');
+                    numberElement.style.transform = 'scale(1.2)';
+
+                    // Speak the number using text-to-speech
+                    const utterance = new SpeechSynthesisUtterance(word);
+                    utterance.volume = 1; // Volume (0 to 1)
+                    utterance.rate = 1; // Speed (0.1 to 10)
+                    utterance.pitch = 1; // Pitch (0 to 2)
+
+                    // Add event listeners for debugging
+                    utterance.onstart = () => console.log("Speech started");
+                    utterance.onend = () => console.log("Speech ended");
+                    utterance.onerror = (event) => console.error("Speech error:", event.error);
+
+                    speechSynthesis.speak(utterance);
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    isHovered = false;
+
+                    // Reset the number size
+                    const numberElement = card.querySelector('h2');
+                    numberElement.style.transform = 'scale(1)';
+                });
+            });
+
+            // Add floating numbers to the background
+            const floatingNumbersContainer = document.getElementById('floating-numbers');
+
+            function createFloatingNumber() {
+                const number = Math.floor(Math.random() * 20) + 1; // Random number between 1 and 20
+                const floatingNumber = document.createElement('div');
+                floatingNumber.className = 'floating-number';
+                floatingNumber.textContent = number;
+
+                // Randomize starting position
+                const startX = Math.random() * window.innerWidth;
+                const startY = Math.random() * window.innerHeight;
+                floatingNumber.style.left = `${startX}px`;
+                floatingNumber.style.top = `${startY}px`;
+
+                // Add to the container
+                floatingNumbersContainer.appendChild(floatingNumber);
+
+                // Remove the number after the animation ends
+                setTimeout(() => {
+                    floatingNumber.remove();
+                }, 5000); // Match the animation duration
+            }
+
+            // Create floating numbers every 500ms
+            setInterval(createFloatingNumber, 500);
+        </script>
+    </body>
+</html>

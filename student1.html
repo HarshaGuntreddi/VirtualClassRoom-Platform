@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Module</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #38b000;
+            --danger: #d90429;
+            --warning: #ffaa00;
+            --info: #4cc9f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 0;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-weight: 600;
+            font-size: 28px;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+        
+        .header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .form-card {
+            background-color: var(--light);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .form-card:hover {
+            background-color: #f0f2f5;
+            transform: translateX(5px);
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .select-wrapper, .input-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .select-wrapper:after {
+            content: '\f107';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            pointer-events: none;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            font-size: 16px;
+            color: var(--dark);
+            appearance: none;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        select:focus, input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(114, 9, 183, 0.2);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .button:hover {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(114, 9, 183, 0.3);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 14px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading i {
+            color: var(--primary);
+            font-size: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            color: var(--danger);
+            background-color: rgba(217, 4, 41, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ATTENDANCE MODULE</h1>
+            <p>Select Semester and Enter Name</p>
+        </div>
+        
+        <div class="content">
+            <form id="attendanceForm">
+                <div class="form-card">
+                    <label for="semester" class="form-label">Semester</label>
+                    <div class="select-wrapper">
+                        <select id="semester" required>
+                            <option value="" disabled selected>Select Semester</option>
+                            <option value="sem1">Semester 1</option>
+                            <option value="sem2">Semester 2</option>
+                            <option value="sem3">Semester 3</option>
+                            <option value="sem4">Semester 4</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-card">
+                    <label for="studentName" class="form-label">Student Name</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="studentName" placeholder="Enter Student Name" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="button">
+                    <i class="fas fa-search"></i> View Attendance
+                </button>
+                
+                <div id="errorMessage" class="error-message">
+                    <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+                </div>
+            </form>
+            
+            <div id="loading" class="loading">
+                <i class="fas fa-circle-notch"></i> Loading...
+            </div>
+        </div>
+        
+        <div class="footer">
+            &copy; 2025 Attendance System
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+        import { firebaseConfig } from "./firebase-config.js";
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Show error message
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorElement.style.display = 'block';
+            
+            // Hide loading indicator
+            document.getElementById('loading').style.display = 'none';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
+        }
+
+        // Add form submit event listener
+        document.getElementById('attendanceForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            // Hide any previous error messages
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            // Show loading indicator
+            document.getElementById('loading').style.display = 'block';
+            
+            const semester = document.getElementById('semester').value;
+            const studentName = document.getElementById('studentName').value.trim();
+            
+            // Input validation
+            if (!semester) {
+                showError('Please select a semester');
+                return;
+            }
+            
+            if (!studentName) {
+                showError('Please enter a student name');
+                return;
+            }
+
+            // Convert to lowercase for case-insensitive search
+            const studentNameLower = studentName.toLowerCase();
+            
+            console.log('Searching for student:', studentNameLower, 'Semester:', semester);
+
+            try {
+                // Create a query to find the student by name
+                const studentQuery = query(
+                    collection(db, 'student'),
+                    where('name', '==', studentNameLower)
+                );
+
+                const querySnapshot = await getDocs(studentQuery);
+
+                if (!querySnapshot.empty) {
+                    // Get the first matching document
+                    const studentDoc = querySnapshot.docs[0];
+                    const studentData = studentDoc.data();
+
+                    console.log('Found student data:', studentData);
+
+                    // Check if semester data exists
+                    if (studentData[semester] && Object.keys(studentData[semester]).length > 0) {
+                        // Redirect to attendance page
+                        const params = new URLSearchParams({
+                            name: studentNameLower,
+                            semester: semester,
+                            // Add student ID for more reliable retrieval on the next page
+                            id: studentDoc.id
+                        });
+
+                        window.location.href = `student2.html?${params.toString()}`;
+                    } else {
+                        console.log('No attendance data found for semester:', semester);
+                        showError(`No attendance data found for ${semester}`);
+                    }
+                } else {
+                    console.log('No student found with name:', studentNameLower);
+                    showError('Student not found. Please check the name and try again.');
+                }
+            } catch (error) {
+                console.error('Error fetching student data:', error);
+                showError('Error fetching student data. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

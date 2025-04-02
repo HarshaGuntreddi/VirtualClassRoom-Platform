@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+    <link rel="icon" href="./IMG/computer.png" type="image/icon type">
+    <link rel="stylesheet" href="faculty-dashboard.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <style>
+        .add-btn {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            background: #2d7ff9;
+            color: white;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            margin: 10px 0 0 105px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .add-btn:hover {
+            transform: scale(1.2) rotate(90deg);
+            box-shadow: 0 0 15px rgba(45, 127, 249, 0.5);
+        }
+        .table, .table1 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .table a, .table1 a {
+            display: block;
+            width: 200px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.3s ease;
+        }
+        .table a:hover, .table1 a:hover {
+            transform: scale(1.05);
+        }
+        .table img, .table1 img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .table h4, .table1 h4 {
+            margin: 10px 0 5px;
+            font-size: 16px;
+        }
+        .table1 p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+        .barb .box-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .barb .box-container .box {
+            position: relative;
+            width: 250px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .barb .box-container .box:hover {
+            transform: scale(1.05);
+        }
+        .barb .box-container .box img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .barb .box-container .box h3 {
+            margin: 10px 0 5px;
+            font-size: 18px;
+        }
+        .barb .box-container .box p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        .edit-delete {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .barb .box-container .box:hover .edit-delete {
+            opacity: 1;
+        }
+        .edit-delete button {
+            padding: 6px 12px;
+            margin: 0 5px;
+            font-size: 12px;
+            background: #2d7ff9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .edit-delete button:hover {
+            background: #1a5bbf;
+        }
+    </style>
+</head>
+<body onload="myload(); loadSpecials(); loadTopSamples(); loadCourses()">
+    <div class="loader-container" id="loader">
+        <img src="#">
+    </div>
+
+    <!-- Header section start -->
+    <header>
+        <a href="#" class="logo"><i class="fa fa-utensils"></i>Faculty-Dashboard</a>
+        <nav class="navbar">
+            <a href="./faculty-dashboardS.html">Home</a>
+            <a class="active" href="./live.html">GO-LIVE</a>
+            <a href="#" onclick="openAbout()">About</a>
+            <a href="./userloginupdation.html">UpdateProfile</a>
+            <a href="./adv.html">Advanced</a>
+            
+            <a href="./login.html">Logout</a>
+        </nav>
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <i class="fas fa-search" id="search-icon"></i>
+            <a href="#" class="fas fa-heart"></a>
+            <a href="#" class="fas fa-shopping-cart"></a>
+            <i class="fa fa-user" aria-hidden="true"></i>
+            <a href="login.html" class="fas fa-sign-in-alt"></a>
+        </div>
+    </header>
+
+    <!-- Feedback Popup -->
+    <div class="back">
+        <div class="container1" id="co1">
+            <div class="post">
+                <div class="text">Thanks for Rating us!</div>
+                <div class="edit">Edit</div>
+                <i class="fas fa-times" id="close"></i>
+            </div>
+            <div class="star-widget">
+                <input type="radio" name="rate" id="rate-5">
+                <label for="rate-5" class="fas fa-star"></label>
+                <input type="radio" name="rate" id="rate-4">
+                <label for="rate-4" class="fas fa-star"></label>
+                <input type="radio" name="rate" id="rate-3">
+                <label for="rate-3" class="fas fa-star"></label>
+                <input type="radio" name="rate" id="rate-2">
+                <label for="rate-2" class="fas fa-star"></label>
+                <input type="radio" name="rate" id="rate-1">
+                <label for="rate-1" class="fas fa-star"></label>
+                <form action="#">
+                    <i class="fas fa-times" id="close"></i>
+                    <h4></h4>
+                    <div class="textarea">
+                        <textarea cols="30" placeholder="Describe your experience"></textarea>
+                    </div>
+                    <div class="btn">
+                        <button type="submit">Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Form -->
+    <form action="" id="search-form">
+        <input type="search" placeholder="search here..." name="" id="search-box">
+        <label for="search-box" class="fas fa-search"></label>
+        <i class="fas fa-times" id="close1"></i>
+    </form>
+
+    <!-- Home Section Start -->
+    <section class="home" id="home-section">
+        <!-- Add Section -->
+        <div class="add">
+            <div class="add-container">
+                <img src="./IMG/bn.jpg">
+                <div class="textimg"><h2>Thanx for creating a<br>better world</h2>
+                <a href="./adv.html"><button class="ordr">Advanced</button></a></div>
+            </div>
+        </div>
+
+        <!-- Specials -->
+        <div class="spl">
+            <h2>Our Specials</h2>
+        </div>
+        <div class="table" id="specialsContainer"></div>
+
+        <!-- Top Samples -->
+        <div class="top-re">
+            <h2>Top Sample</h2>
+        </div>
+        <div class="table1" id="topSamplesContainer"></div>
+
+        <!-- Grocery Banner -->
+        <div class="container-grocery">
+            <img src="./IMG/white_image.jpg" alt="Norway" style="width:100%;">
+            <div class="text-block">
+                <h2>Sir!</h2>
+                <h4>Anything you need, Done!</h4>
+                <p>Create brains stronger and brighter<br>Click here to unlock your advavnced features.</p>
+                <div class="ordergrocery">
+                    <a href="./adv.html" class="orderg"><i class="fab fa-whatsapp"></i>Advanced👑</a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses Section -->
+        <div class="res">
+            <h2></h2>
+            <hr class="line">
+            <div class="add-btn" onclick="addCourse()">+</div>
+        </div>
+        <section class="barb" id="biryani">
+            <h1 class="barbeque">Edit</h1>
+            <hr class="line">
+            <div class="box-container" id="courseContainer"></div>
+        </section>
+    </section>
+
+    <!-- About Section -->
+    <div id="about" class="about">
+        <a href="#" class="closebtn" onclick="closeNav()">×</a>
+        <div class="about-overlay">
+            <h1>About us</h1>
+            <p>Launched in 2021, our technology platform connects students, <br>
+                teachers, and institutions, serving their multiple needs. <br>
+                Students use our platform to attend live classes, access learning materials, <br>
+                submit assignments, participate in discussions, and take online assessments.</p>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="footer-col">
+                    <ul>
+                        <i class="fa fa-utensils"></i>
+                        <span>VirtualClassRoom</span>
+                    </ul>
+                    <div class="map">
+                        <ul>
+                            <i class="fa fa-map-marker"></i>
+                            <span>5th Floor, A-118, Sangareddy, Hyderabad, Telangana - 502001</span>
+                        </ul>
+                    </div>
+                    <div class="mail">
+                        <ul>
+                            <i class="fas fa-inbox"></i>
+                            <span><a href="#">example@email.com</a></span>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Faculty-Dashboard</h4>
+                    <ul>
+                        <li><a href="#" onclick="openAbout()">about us</a></li>
+                        <li><a href="#">Our services</a></li>
+                        <li><a href="#">Privacy policy</a></li>
+                        <li><a href="#">Payment policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Get help</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Sample</a></li>
+                        <li><a href="#">My orders</a></li>
+                        <li><a href="#">Order Status</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Follow us</h4>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com/login"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com/login"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        let menu = document.querySelector('#menu-bars');
+        let navbar = document.querySelector('.navbar');
+
+        menu.onclick = () => {
+            menu.classList.toggle('fa-times');
+            navbar.classList.toggle('active');
+        };
+        window.onscroll = () => {
+            menu.classList.remove('fa-times');
+            navbar.classList.remove('active');
+        };
+        document.querySelector('#search-icon').onclick = () => {
+            document.querySelector('#search-form').classList.toggle('active');
+        };
+        document.querySelector('#close1').onclick = () => {
+            document.querySelector('#search-form').classList.toggle('active');
+        };
+        document.querySelector("#feedback").onclick = () => {
+            document.querySelector("#co1").classList.toggle("active");
+        };
+        document.querySelector("#close").onclick = () => {
+            document.querySelector("#co1").classList.toggle("active");
+        };
+
+        const btn = document.querySelector(".btn button");
+        const post = document.querySelector(".post");
+        const widget = document.querySelector(".star-widget");
+        const editBtn = document.querySelector(".edit");
+
+        btn.onclick = () => {
+            widget.style.display = "none";
+            post.style.display = "block";
+            editBtn.onclick = () => {
+                widget.style.display = "block";
+                post.style.display = "none";
+            };
+            return false;
+        };
+
+        function openAbout() {
+            document.getElementById("about").style.width = "100%";
+        }
+        function closeNav() {
+            document.getElementById("about").style.width = "0%";
+        }
+        function myload() {
+            document.getElementById("loader").style.display = "none";
+        }
+        function mygrocery() {
+            confirm("Contacting via Authentication...");
+        }
+
+        // Data Management
+        const defaultImg = "./IMG/m.jpg";
+
+        function loadSpecials() {
+            const specials = JSON.parse(localStorage.getItem("specials")) || [];
+            const container = document.getElementById("specialsContainer");
+            container.innerHTML = "";
+            specials.forEach((special) => {
+                const item = document.createElement("a");
+                item.href = special.link;
+                item.innerHTML = `
+                    <img src="${special.img || defaultImg}" alt="${special.title}">
+                    <h4>${special.title}</h4>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function loadTopSamples() {
+            const topSamples = JSON.parse(localStorage.getItem("topSamples")) || [];
+            const container = document.getElementById("topSamplesContainer");
+            container.innerHTML = "";
+            topSamples.forEach((sample) => {
+                const item = document.createElement("a");
+                item.href = sample.link;
+                item.innerHTML = `
+                    <img src="${sample.img || defaultImg}" alt="${sample.title}">
+                    <h4>${sample.title}</h4>
+                    <p>${sample.description}</p>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function loadCourses() {
+            const courses = JSON.parse(localStorage.getItem("courses")) || [];
+            const container = document.getElementById("courseContainer");
+            container.innerHTML = "";
+            courses.forEach((course, index) => {
+                const box = document.createElement("div");
+                box.className = "box";
+                box.innerHTML = `
+                    <a href="${course.link}"><img src="${course.img || defaultImg}" alt="${course.title}"></a>
+                    <h3>${course.title}</h3>
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                        <br>
+                        <p>${course.description}</p>
+                    </div>
+                    <div class="edit-delete">
+                        <button onclick="editCourse(${index})">Edit</button>
+                        <button onclick="deleteCourse(${index})">Delete</button>
+                    </div>
+                `;
+                container.appendChild(box);
+            });
+        }
+
+        function addCourse() {
+            const title = prompt("Enter course title:");
+            if (!title) return;
+            const description = prompt("Enter course description:");
+            if (!description) return;
+            const link = prompt("Enter course link (optional):") || "#";
+            const img = prompt("Enter image URL (optional, default: ./IMG/m.jpg):") || defaultImg;
+            const courses = JSON.parse(localStorage.getItem("courses")) || [];
+            courses.push({ title, description, link, img });
+            localStorage.setItem("courses", JSON.stringify(courses));
+            loadCourses();
+        }
+
+        function editCourse(index) {
+            const courses = JSON.parse(localStorage.getItem("courses")) || [];
+            const course = courses[index];
+            const newTitle = prompt("Edit course title:", course.title);
+            if (!newTitle) return;
+            const newDescription = prompt("Edit course description:", course.description);
+            if (!newDescription) return;
+            const newLink = prompt("Edit course link:", course.link) || "#";
+            const newImg = prompt("Edit image URL (default: ./IMG/m.jpg):", course.img) || defaultImg;
+            courses[index] = { title: newTitle, description: newDescription, link: newLink, img: newImg };
+            localStorage.setItem("courses", JSON.stringify(courses));
+            loadCourses();
+        }
+
+        function deleteCourse(index) {
+            if (confirm("Are you sure you want to delete this course?")) {
+                const courses = JSON.parse(localStorage.getItem("courses")) || [];
+                courses.splice(index, 1);
+                localStorage.setItem("courses", JSON.stringify(courses));
+                loadCourses();
+            }
+        }
+    </script>
+</body>
+</html>

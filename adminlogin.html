@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login-VCP</title>
+    <link rel="stylesheet" href="adminlogin.css" />
+    <link rel="icon" href="./IMG/computer.png" type="image/icon type" />
+  </head>
+  <body>
+    <!-- Faculty Login and Login Icons -->
+    <div class="top-icons">
+      <div class="faculty-login-icon" onclick="redirectToFacultyLogin()">
+        <span>Faculty Login</span>
+      </div>
+      <div class="login-icon" onclick="redirectToLogin()">
+        <span>Login</span>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="loginbg">
+        <div class="box signin">
+          <h2>Admin Login</h2>
+          <button class="signinbtn">Sign in</button>
+        </div>
+      </div>
+      <div class="formbx">
+        <!-- Admin Login Form -->
+        <div class="form signinform">
+          <form id="adminLoginForm">
+            <h2>Admin Login</h2>
+            <h3>Sign In</h3>
+            <input type="email" id="adminEmail" placeholder="Admin Email" required />
+            <input type="password" id="adminPassword" placeholder="Admin Password" required />
+            <input type="submit" value="Login" />
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Redirect to Faculty Login Page
+      function redirectToFacultyLogin() {
+        window.location.href = "facultylogin.html";
+      }
+
+      // Redirect to Login Page
+      function redirectToLogin() {
+        window.location.href = "login.html";
+      }
+
+      // Admin Login Form Submission
+      document.getElementById("adminLoginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const adminEmail = document.getElementById("adminEmail").value;
+        const adminPassword = document.getElementById("adminPassword").value;
+
+        // Hardcoded Admin Credentials
+        const ADMIN_CREDENTIALS = {
+          email: "admin@example.com",
+          password: "admin123",
+        };
+
+        // Check if credentials match
+        if (
+          adminEmail === ADMIN_CREDENTIALS.email &&
+          adminPassword === ADMIN_CREDENTIALS.password
+        ) {
+          alert("Admin login successful!");
+          document.getElementById("adminLoginForm").reset();
+
+          // Store logged-in admin details in sessionStorage
+          sessionStorage.setItem("loggedInUser", JSON.stringify({ ...ADMIN_CREDENTIALS, userType: "admin" }));
+
+          // Redirect to admin privileges page
+          window.location.href = "adminprivileges.html";
+        } else {
+          alert("Invalid admin credentials!");
+        }
+      });
+    </script>
+  </body>
+</html>

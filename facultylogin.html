@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Faculty Login-VCP</title>
+    <link rel="stylesheet" href="facultylogin.css" />
+    <link rel="icon" href="./IMG/computer.png" type="image/icon type" />
+  </head>
+  <body>
+    <!-- Login and Admin Login Icons -->
+    <div class="top-icons">
+      <div class="login-icon" onclick="redirectToLogin()">
+        <span>Login</span>
+      </div>
+      <div class="admin-login-icon" onclick="redirectToAdminLogin()">
+        <span>Admin Login</span>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="loginbg">
+        <div class="box signin">
+          <h2>Already Have an Account?</h2>
+          <button class="signinbtn">Sign in</button>
+        </div>
+        <div class="box signup">
+          <h2>Don't Have an Account?</h2>
+          <button class="signupbtn">Sign up</button>
+        </div>
+      </div>
+      <div class="formbx">
+        <!-- Faculty Login Form -->
+        <div class="form signinform">
+          <form id="facultyLoginForm">
+            <h2>Faculty Login</h2>
+            <h3>Sign In</h3>
+            <input type="email" id="facultyEmail" placeholder="Email" required />
+            <input type="password" id="facultyPassword" placeholder="Password" required />
+            <input type="submit" value="Login" />
+          </form>
+        </div>
+
+        <!-- Faculty Signup Form -->
+        <div class="form signupform">
+          <form id="facultySignupForm">
+            <h3>Sign up</h3>
+            <input type="text" id="facultySignupUsername" placeholder="Enter Your Name" required />
+            <input type="email" id="facultySignupEmail" placeholder="Email" required />
+            <input type="password" id="facultySignupPassword" placeholder="Password" required />
+            <input type="password" id="facultySignupConfirmPassword" placeholder="Confirm password" required />
+            <input type="submit" value="Sign Up" />
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Redirect to Login Page
+      function redirectToLogin() {
+        window.location.href = "login.html";
+      }
+
+      // Redirect to Admin Login Page
+      function redirectToAdminLogin() {
+        window.location.href = "adminlogin.html";
+      }
+
+      // Toggle between login and signup forms
+      const signinbtn = document.querySelector(".signinbtn");
+      const signupbtn = document.querySelector(".signupbtn");
+      const formbx = document.querySelector(".formbx");
+      const body = document.querySelector("body");
+
+      signupbtn.onclick = function () {
+        formbx.classList.add("active");
+        body.classList.add("active");
+      };
+
+      signinbtn.onclick = function () {
+        formbx.classList.remove("active");
+        body.classList.remove("active");
+      };
+
+      // Function to check if a faculty already exists
+      function getFaculty(email) {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        return users.find((user) => user.email === email && user.userType === "faculty");
+      }
+
+      // Faculty Signup Form Submission
+      document.getElementById("facultySignupForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById("facultySignupUsername").value;
+        const email = document.getElementById("facultySignupEmail").value;
+        const password = document.getElementById("facultySignupPassword").value;
+        const confirmPassword = document.getElementById("facultySignupConfirmPassword").value;
+
+        // Validate password match
+        if (password.trim() !== confirmPassword.trim()) {
+          alert("Passwords do not match!");
+          return;
+        }
+
+        // Check if faculty already exists
+        if (getFaculty(email)) {
+          alert("Faculty already exists!");
+          return;
+        }
+
+        // Create new faculty object
+        const newFaculty = {
+          username,
+          email,
+          password, // In a real app, you should hash the password!
+          userType: "faculty",
+          registrationDate: new Date().toISOString(), // Add registration date
+        };
+
+        // Save faculty to local storage
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        users.push(newFaculty);
+        localStorage.setItem("users", JSON.stringify(users));
+
+        alert("Faculty signup successful! Please login.");
+        document.getElementById("facultySignupForm").reset();
+      });
+
+      // Faculty Login Form Submission
+      document.getElementById("facultyLoginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("facultyEmail").value;
+        const password = document.getElementById("facultyPassword").value;
+
+        // Find faculty in local storage
+        const faculty = getFaculty(email);
+
+        if (!faculty) {
+          alert("Faculty not found!");
+          return;
+        }
+
+        // Check password (in a real app, compare hashed passwords)
+        if (faculty.password !== password) {
+          alert("Invalid password!");
+          return;
+        }
+
+        alert("Faculty login successful!");
+        document.getElementById("facultyLoginForm").reset();
+
+        // Store logged-in faculty details in sessionStorage
+        sessionStorage.setItem("loggedInUser", JSON.stringify(faculty));
+
+        // Redirect to faculty dashboard
+        window.location.href = "faculty-dashboardS.html";
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Privileges</title>
+    <link rel="stylesheet" href="adminprivileges.css" />
+    <link rel="icon" href="./IMG/computer.png" type="image/icon type" />
+    <style>
+      .management-section {
+        margin: 20px 0;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 5px;
+      }
+      .management-section h2 {
+        margin-bottom: 10px;
+        color: #333;
+      }
+      .add-btn {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        background: #2d7ff9;
+        color: white;
+        border-radius: 50%;
+        font-size: 20px;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .add-btn:hover {
+        transform: scale(1.2) rotate(90deg);
+        box-shadow: 0 0 15px rgba(45, 127, 249, 0.5);
+      }
+      .management-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      .management-table th, .management-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      .management-table th {
+        background: #2d7ff9;
+        color: white;
+      }
+      .management-table button {
+        padding: 5px 10px;
+        margin: 0 5px;
+        background: #2d7ff9;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      .management-table button:hover {
+        background: #1a5bbf;
+      }
+      .management-table img {
+        max-width: 50px;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-dashboard">
+      <!-- Top Icons -->
+      <div class="top-icons">
+        <div class="logout-icon" onclick="logout()">
+          <span>Logout</span>
+        </div>
+      </div>
+
+      <h1>Welcome, Admin</h1>
+      
+      <!-- User Data Table -->
+      <div class="user-table">
+        <table>
+          <thead>
+            <tr>
+              <th>User Type</th>
+              <th>Email</th>
+              <th>Password</th>
+              <th>Registration Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody">
+            <!-- Data will be populated here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Specials Management Section -->
+      <div class="management-section">
+        <h2>Manage Our Specials</h2>
+        <div class="add-btn" onclick="addSpecial()">+</div>
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Link</th>
+              <th>Image</th>
+              <th>Order</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="specialsTableBody">
+            <!-- Specials will be populated here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Top Samples Management Section -->
+      <div class="management-section">
+        <h2>Manage Top Samples</h2>
+        <div class="add-btn" onclick="addTopSample()">+</div>
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Link</th>
+              <th>Image</th>
+              <th>Order</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="topSamplesTableBody">
+            <!-- Top Samples will be populated here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Courses Management Section -->
+      <div class="management-section">
+        <h2>Manage Courses</h2>
+        <div class="add-btn" onclick="addCourse()">+</div>
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Link</th>
+              <th>Image</th>
+              <th>Order</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="courseTableBody">
+            <!-- Courses will be populated here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      // Check admin access
+      const loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+      if (!loggedInUser || loggedInUser.userType !== "admin") {
+        alert("Access denied! You are not an admin.");
+        window.location.href = "login.html";
+      }
+
+      // Populate user data
+      function populateUserTable() {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const tbody = document.getElementById("userTableBody");
+        
+        tbody.innerHTML = users.map(user => `
+          <tr>
+            <td>${user.userType}</td>
+            <td>${user.email}</td>
+            <td>${'*'.repeat(user.password.length)}</td>
+            <td>${new Date(user.registrationDate).toLocaleDateString()}</td>
+            <td>
+              <button onclick="editUser('${user.email}')">Edit</button>
+              <button onclick="deleteUser('${user.email}')">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Initial population
+      populateUserTable();
+
+      // User management functions
+      function editUser(email) {
+        const users = JSON.parse(localStorage.getItem("users"));
+        const user = users.find(u => u.email === email);
+        if (user) {
+          const newPassword = prompt("Enter new password:", user.password);
+          if (newPassword) {
+            user.password = newPassword;
+            localStorage.setItem("users", JSON.stringify(users));
+            populateUserTable();
+          }
+        }
+      }
+
+      function deleteUser(email) {
+        const users = JSON.parse(localStorage.getItem("users"));
+        const filteredUsers = users.filter(u => u.email !== email);
+        localStorage.setItem("users", JSON.stringify(filteredUsers));
+        populateUserTable();
+      }
+
+      function logout() {
+        sessionStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
+      }
+
+      // Common variables
+      const defaultImg = "./IMG/m.jpg"; // Default image, consistent with other dashboards
+
+      // Specials Management
+      function populateSpecialsTable() {
+        const specials = JSON.parse(localStorage.getItem("specials")) || [];
+        const tbody = document.getElementById("specialsTableBody");
+        
+        tbody.innerHTML = specials.map((special, index) => `
+          <tr>
+            <td>${special.title}</td>
+            <td><a href="${special.link}" target="_blank">${special.link}</a></td>
+            <td><img src="${special.img || defaultImg}" alt="${special.title}"></td>
+            <td>
+              <button onclick="moveSpecialUp(${index})" ${index === 0 ? 'disabled' : ''}>↑</button>
+              <button onclick="moveSpecialDown(${index})" ${index === specials.length - 1 ? 'disabled' : ''}>↓</button>
+            </td>
+            <td>
+              <button onclick="editSpecial(${index})">Edit</button>
+              <button onclick="deleteSpecial(${index})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      function addSpecial() {
+        const title = prompt("Enter special title:");
+        if (!title) return;
+        const link = prompt("Enter special link (optional):") || "./dishes.html";
+        const img = prompt("Enter image URL (optional, default: ./IMG/m.jpg):") || defaultImg;
+
+        const specials = JSON.parse(localStorage.getItem("specials")) || [];
+        specials.push({ title, link, img });
+        localStorage.setItem("specials", JSON.stringify(specials));
+        populateSpecialsTable();
+      }
+
+      function editSpecial(index) {
+        const specials = JSON.parse(localStorage.getItem("specials")) || [];
+        const special = specials[index];
+        const newTitle = prompt("Edit special title:", special.title);
+        if (!newTitle) return;
+        const newLink = prompt("Edit special link:", special.link) || "./dishes.html";
+        const newImg = prompt("Edit image URL (default: ./IMG/m.jpg):", special.img) || defaultImg;
+
+        specials[index] = { title: newTitle, link: newLink, img: newImg };
+        localStorage.setItem("specials", JSON.stringify(specials));
+        populateSpecialsTable();
+      }
+
+      function deleteSpecial(index) {
+        if (confirm("Are you sure you want to delete this special?")) {
+          const specials = JSON.parse(localStorage.getItem("specials")) || [];
+          specials.splice(index, 1);
+          localStorage.setItem("specials", JSON.stringify(specials));
+          populateSpecialsTable();
+        }
+      }
+
+      function moveSpecialUp(index) {
+        const specials = JSON.parse(localStorage.getItem("specials")) || [];
+        if (index > 0) {
+          [specials[index - 1], specials[index]] = [specials[index], specials[index - 1]];
+          localStorage.setItem("specials", JSON.stringify(specials));
+          populateSpecialsTable();
+        }
+      }
+
+      function moveSpecialDown(index) {
+        const specials = JSON.parse(localStorage.getItem("specials")) || [];
+        if (index < specials.length - 1) {
+          [specials[index], specials[index + 1]] = [specials[index + 1], specials[index]];
+          localStorage.setItem("specials", JSON.stringify(specials));
+          populateSpecialsTable();
+        }
+      }
+
+      // Top Samples Management
+      function populateTopSamplesTable() {
+        const topSamples = JSON.parse(localStorage.getItem("topSamples")) || [];
+        const tbody = document.getElementById("topSamplesTableBody");
+        
+        tbody.innerHTML = topSamples.map((sample, index) => `
+          <tr>
+            <td>${sample.title}</td>
+            <td>${sample.description}</td>
+            <td><a href="${sample.link}" target="_blank">${sample.link}</a></td>
+            <td><img src="${sample.img || defaultImg}" alt="${sample.title}"></td>
+            <td>
+              <button onclick="moveTopSampleUp(${index})" ${index === 0 ? 'disabled' : ''}>↑</button>
+              <button onclick="moveTopSampleDown(${index})" ${index === topSamples.length - 1 ? 'disabled' : ''}>↓</button>
+            </td>
+            <td>
+              <button onclick="editTopSample(${index})">Edit</button>
+              <button onclick="deleteTopSample(${index})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      function addTopSample() {
+        const title = prompt("Enter top sample title:");
+        if (!title) return;
+        const description = prompt("Enter top sample description:");
+        if (!description) return;
+        const link = prompt("Enter top sample link (optional):") || "#";
+        const img = prompt("Enter image URL (optional, default: ./IMG/m.jpg):") || defaultImg;
+
+        const topSamples = JSON.parse(localStorage.getItem("topSamples")) || [];
+        topSamples.push({ title, description, link, img });
+        localStorage.setItem("topSamples", JSON.stringify(topSamples));
+        populateTopSamplesTable();
+      }
+
+      function editTopSample(index) {
+        const topSamples = JSON.parse(localStorage.getItem("topSamples")) || [];
+        const sample = topSamples[index];
+        const newTitle = prompt("Edit top sample title:", sample.title);
+        if (!newTitle) return;
+        const newDescription = prompt("Edit top sample description:", sample.description);
+        if (!newDescription) return;
+        const newLink = prompt("Edit top sample link:", sample.link) || "#";
+        const newImg = prompt("Edit image URL (default: ./IMG/m.jpg):", sample.img) || defaultImg;
+
+        topSamples[index] = { title: newTitle, description: newDescription, link: newLink, img: newImg };
+        localStorage.setItem("topSamples", JSON.stringify(topSamples));
+        populateTopSamplesTable();
+      }
+
+      function deleteTopSample(index) {
+        if (confirm("Are you sure you want to delete this top sample?")) {
+          const topSamples = JSON.parse(localStorage.getItem("topSamples")) || [];
+          topSamples.splice(index, 1);
+          localStorage.setItem("topSamples", JSON.stringify(topSamples));
+          populateTopSamplesTable();
+        }
+      }
+
+      function moveTopSampleUp(index) {
+        const topSamples = JSON.parse(localStorage.getItem("topSamples")) || [];
+        if (index > 0) {
+          [topSamples[index - 1], topSamples[index]] = [topSamples[index], topSamples[index - 1]];
+          localStorage.setItem("topSamples", JSON.stringify(topSamples));
+          populateTopSamplesTable();
+        }
+      }
+
+      function moveTopSampleDown(index) {
+        const topSamples = JSON.parse(localStorage.getItem("topSamples")) || [];
+        if (index < topSamples.length - 1) {
+          [topSamples[index], topSamples[index + 1]] = [topSamples[index + 1], topSamples[index]];
+          localStorage.setItem("topSamples", JSON.stringify(topSamples));
+          populateTopSamplesTable();
+        }
+      }
+
+      // Courses Management
+      function populateCourseTable() {
+        const courses = JSON.parse(localStorage.getItem("courses")) || [];
+        const tbody = document.getElementById("courseTableBody");
+        
+        tbody.innerHTML = courses.map((course, index) => `
+          <tr>
+            <td>${course.title}</td>
+            <td>${course.description}</td>
+            <td><a href="${course.link}" target="_blank">${course.link}</a></td>
+            <td><img src="${course.img || defaultImg}" alt="${course.title}"></td>
+            <td>
+              <button onclick="moveCourseUp(${index})" ${index === 0 ? 'disabled' : ''}>↑</button>
+              <button onclick="moveCourseDown(${index})" ${index === courses.length - 1 ? 'disabled' : ''}>↓</button>
+            </td>
+            <td>
+              <button onclick="editCourse(${index})">Edit</button>
+              <button onclick="deleteCourse(${index})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      function addCourse() {
+        const title = prompt("Enter course title:");
+        if (!title) return;
+        const description = prompt("Enter course description:");
+        if (!description) return;
+        const link = prompt("Enter course link (optional):") || "#";
+        const img = prompt("Enter image URL (optional, default: ./IMG/m.jpg):") || defaultImg;
+
+        const courses = JSON.parse(localStorage.getItem("courses")) || [];
+        courses.push({ title, description, link, img });
+        localStorage.setItem("courses", JSON.stringify(courses));
+        populateCourseTable();
+      }
+
+      function editCourse(index) {
+        const courses = JSON.parse(localStorage.getItem("courses")) || [];
+        const course = courses[index];
+        const newTitle = prompt("Edit course title:", course.title);
+        if (!newTitle) return;
+        const newDescription = prompt("Edit course description:", course.description);
+        if (!newDescription) return;
+        const newLink = prompt("Edit course link:", course.link) || "#";
+        const newImg = prompt("Edit image URL (default: ./IMG/m.jpg):", course.img) || defaultImg;
+
+        courses[index] = { title: newTitle, description: newDescription, link: newLink, img: newImg };
+        localStorage.setItem("courses", JSON.stringify(courses));
+        populateCourseTable();
+      }
+
+      function deleteCourse(index) {
+        if (confirm("Are you sure you want to delete this course?")) {
+          const courses = JSON.parse(localStorage.getItem("courses")) || [];
+          courses.splice(index, 1);
+          localStorage.setItem("courses", JSON.stringify(courses));
+          populateCourseTable();
+        }
+      }
+
+      function moveCourseUp(index) {
+        const courses = JSON.parse(localStorage.getItem("courses")) || [];
+        if (index > 0) {
+          [courses[index - 1], courses[index]] = [courses[index], courses[index - 1]];
+          localStorage.setItem("courses", JSON.stringify(courses));
+          populateCourseTable();
+        }
+      }
+
+      function moveCourseDown(index) {
+        const courses = JSON.parse(localStorage.getItem("courses")) || [];
+        if (index < courses.length - 1) {
+          [courses[index], courses[index + 1]] = [courses[index + 1], courses[index]];
+          localStorage.setItem("courses", JSON.stringify(courses));
+          populateCourseTable();
+        }
+      }
+
+      // Initial population of all tables
+      populateSpecialsTable();
+      populateTopSamplesTable();
+      populateCourseTable();
+    </script>
+  </body>
+</html>

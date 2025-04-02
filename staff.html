@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Attendance System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #38b000;
+            --danger: #d90429;
+            --warning: #ffaa00;
+            --info: #4cc9f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1000px;
+            padding: 0;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-weight: 600;
+            font-size: 28px;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .form-card {
+            background-color: var(--light);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary);
+        }
+
+        .form-card:hover {
+            background-color: #f0f2f5;
+            transform: translateX(5px);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .select-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .select-wrapper:after {
+            content: '\f107';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            pointer-events: none;
+        }
+
+        select {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            font-size: 16px;
+            color: var(--dark);
+            appearance: none;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        td {
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #f0f2f5;
+        }
+
+        .attendance-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+        }
+
+        .attendance-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .present {
+            background: var(--success);
+            color: white;
+        }
+
+        .absent {
+            background: var(--danger);
+            color: white;
+        }
+
+        .neutral {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .header-info {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--primary);
+            font-weight: 400;
+            color: var(--dark);
+        }
+
+        .submit-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #submitAttendance {
+            display: inline-block;
+            width: auto;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(114, 9, 183, 0.2);
+        }
+
+        #submitAttendance:hover {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(114, 9, 183, 0.3);
+        }
+
+        #submitAttendance:active {
+            transform: translateY(0);
+        }
+
+        #submitAttendance:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+            opacity: 0.7;
+        }
+
+        .unmarked {
+            background-color: rgba(217, 4, 41, 0.1);
+            border-left: 5px solid var(--danger);
+        }
+
+        .error-message {
+            color: var(--danger);
+            background-color: rgba(217, 4, 41, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: 500;
+            display: none;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .attendance-btn {
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Staff Attendance System</h1>
+        </div>
+        
+        <div class="content">
+            <div class="form-card">
+                <label for="semester" class="form-label">Select Semester:</label>
+                <div class="select-wrapper">
+                    <select id="semester">
+                        <option value="">-- Select Semester --</option>
+                        <option value="sem1">Semester 1</option>
+                        <option value="sem2">Semester 2</option>
+                        <option value="sem3">Semester 3</option>
+                        <option value="sem4">Semester 4</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-card hidden" id="courseGroup">
+                <label for="course" class="form-label">Select Course:</label>
+                <div class="select-wrapper">
+                    <select id="course">
+                        <option value="">-- Select Course --</option>
+                        <!-- Courses will be loaded dynamically -->
+                    </select>
+                </div>
+            </div>
+            
+            <div id="studentList" class="hidden">
+                <div class="header-info">
+                    <div id="classInfo"></div>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Roll No.</th>
+                            <th>Student Name</th>
+                            <th>Attendance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <!-- Students will be loaded here -->
+                    </tbody>
+                </table>
+                
+                <div class="error-message" id="errorMessage">
+                    Please mark attendance for all students before submitting.
+                </div>
+
+                <div class="submit-container">
+                    <button id="submitAttendance">Submit Attendance</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, updateDoc, doc, increment, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+        import { firebaseConfig } from "./firebase-config.js";
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+    
+        // When semester is changed, load its courses from Firestore
+        document.getElementById('semester').addEventListener('change', async function() {
+            const semester = this.value;
+            const courseSelect = document.getElementById('course');
+            const courseGroup = document.getElementById('courseGroup');
+            const studentList = document.getElementById('studentList');
+            
+            // Clear previous courses and hide student list
+            courseSelect.innerHTML = '<option value="">-- Select Course --</option>';
+            courseGroup.classList.add('hidden');
+            studentList.classList.add('hidden');
+            
+            if (semester) {
+                try {
+                    // Get the courses collection for the selected semester
+                    const coursesRef = collection(db, semester);
+                    const coursesSnapshot = await getDocs(coursesRef);
+                    
+                    if (coursesSnapshot.empty) {
+                        throw new Error(`No courses found for ${semester}`);
+                    }
+                    
+                    // Create a Set to store unique course IDs
+                    const uniqueCourseIds = new Set();
+                    
+                    // Fetch each document to get the fields (courses)
+                    for (const docSnap of coursesSnapshot.docs) {
+                        const courseDocRef = doc(db, semester, docSnap.id);
+                        const courseDocSnap = await getDoc(courseDocRef);
+                        if (courseDocSnap.exists()) {
+                            const courseData = courseDocSnap.data();
+                            Object.keys(courseData).forEach(courseId => {
+                                // Only add the course if it's not already in the set
+                                if (!uniqueCourseIds.has(courseId)) {
+                                    uniqueCourseIds.add(courseId);
+                                    const option = document.createElement('option');
+                                    option.value = courseId;
+                                    option.textContent = courseId.replace(/_/g, ' ');
+                                    courseSelect.appendChild(option);
+                                }
+                            });
+                        }
+                    }
+                    courseGroup.classList.remove('hidden');
+                } catch (error) {
+                    console.error("Error fetching courses:", error);
+                    alert("Failed to load courses. Please try again.");
+                }
+            }
+        });
+    
+        // When course is chosen, load students (only those enrolled in the selected semester/course)
+        document.getElementById('course').addEventListener('change', async function() {
+            const courseId = this.value;
+            const studentList = document.getElementById('studentList');
+            const studentTableBody = document.getElementById('studentTableBody');
+            const classInfo = document.getElementById('classInfo');
+            const semester = document.getElementById('semester').value;
+            
+            // Clear previous students and hide the list
+            studentTableBody.innerHTML = '';
+            studentList.classList.add('hidden');
+            
+            if (courseId) {
+                try {
+                    // Display class info
+                    const semesterText = document.getElementById('semester').options[document.getElementById('semester').selectedIndex].text;
+                    const courseText = this.options[this.selectedIndex].text;
+                    classInfo.innerHTML = `<strong>Class:</strong> ${semesterText} - ${courseText}`;
+                    
+                    // Query the "student" collection where the student is enrolled in the selected semester/course.
+                    const studentsRef = collection(db, "student");
+                    const studentsQuery = query(studentsRef, where(`${semester}.${courseId}`, "!=", null)); // Check if the field exists
+                    const studentsSnapshot = await getDocs(studentsQuery);
+                    
+                    if (studentsSnapshot.empty) {
+                        studentTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">No students found for this course.</td></tr>';
+                    } else {
+                        studentsSnapshot.forEach(docSnap => {
+                            const studentData = docSnap.data();
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${docSnap.id}</td>
+                                <td>${studentData.name || 'Unknown'}</td>
+                                <td>
+                                    <button class="attendance-btn neutral" data-student="${docSnap.id}" data-status="neutral">Not Marked</button>
+                                    <button class="attendance-btn present" data-student="${docSnap.id}" data-status="present">Present</button>
+                                    <button class="attendance-btn absent" data-student="${docSnap.id}" data-status="absent">Absent</button>
+                                </td>
+                            `;
+                            studentTableBody.appendChild(row);
+                        });
+                        setupAttendanceButtons();
+                    }
+                    studentList.classList.remove('hidden');
+                } catch (error) {
+                    console.error("Error fetching students:", error);
+                    alert("Failed to load students. Please try again.");
+                }
+            }
+        });
+    
+        // Set up attendance buttons so that, when pressed, they reflect the chosen status
+        function setupAttendanceButtons() {
+            const buttons = document.querySelectorAll('.attendance-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const studentId = this.getAttribute('data-student');
+                    const status = this.getAttribute('data-status');
+                    // Reset buttons for same student
+                    const studentButtons = document.querySelectorAll(`.attendance-btn[data-student="${studentId}"]`);
+                    studentButtons.forEach(btn => {
+                        btn.style.display = 'inline-block';
+                    });
+                    // If present or absent is clicked, hide neutral and the undo option
+                    if (status === 'present' || status === 'absent') {
+                        this.style.display = 'inline-block';
+                        document.querySelector(`.attendance-btn[data-student="${studentId}"][data-status="neutral"]`).style.display = 'none';
+                        document.querySelector(`.attendance-btn[data-student="${studentId}"][data-status="${status === 'present' ? 'absent' : 'present'}"]`).style.display = 'none';
+                    }
+                    // Remove unmarked class if attendance is marked
+                    const row = this.closest('tr');
+                    if (row) {
+                        row.classList.remove('unmarked');
+                    }
+                });
+            });
+        }
+    
+        // Submit attendance: update both the student record and the semester document accordingly.
+        document.getElementById('submitAttendance').addEventListener('click', async function() {
+            const semester = document.getElementById('semester').value;
+            const course = document.getElementById('course').value;
+            
+            if (!semester || !course) {
+                alert('Please select both semester and course before submitting attendance.');
+                return;
+            }
+            
+            try {
+                // Collect attendance status for each student from the table
+                const attendanceData = [];
+                const studentRows = document.querySelectorAll('#studentTableBody tr');
+                let hasUnmarked = false;
+                
+                studentRows.forEach(row => {
+                    const studentId = row.cells[0].textContent;
+                    // Using the displayed status of the "present" button as a check
+                    const presentBtn = row.querySelector('.attendance-btn[data-status="present"]');
+                    const absentBtn = row.querySelector('.attendance-btn[data-status="absent"]');
+                    let status = 'Not Marked';
+                    if (presentBtn && window.getComputedStyle(presentBtn).display !== 'none') {
+                        status = 'Present';
+                    } else if (absentBtn && window.getComputedStyle(absentBtn).display !== 'none') {
+                        status = 'Absent';
+                    }
+                    if (status === 'Not Marked') {
+                        hasUnmarked = true;
+                        row.classList.add('unmarked'); // Highlight unmarked rows
+                    }
+                    attendanceData.push({ studentId, status });
+                });
+                
+                // If any student is unmarked, show error message and prevent submission
+                if (hasUnmarked) {
+                    document.getElementById('errorMessage').style.display = 'block';
+                    return;
+                } else {
+                    document.getElementById('errorMessage').style.display = 'none';
+                }
+                
+                // Disable button & show loading state
+                const submitButton = document.getElementById('submitAttendance');
+                submitButton.textContent = 'Submitting...';
+                submitButton.disabled = true;
+                
+                // Update each student record based on marked attendance.
+                for (const record of attendanceData) {
+                    try {
+                        const studentRef = doc(db, "student", record.studentId);
+                        const updateData = {};
+                        if (record.status === 'Present') {
+                            updateData[`${semester}.${course}.present`] = increment(1);
+                        }
+                        updateData[`${semester}.${course}.total`] = increment(1);
+                        await updateDoc(studentRef, updateData);
+                        console.log(`Updated attendance for student ${record.studentId}`);
+                    } catch (error) {
+                        console.error(`Error updating student ${record.studentId}:`, error);
+                        throw error;
+                    }
+                }
+                
+                // Update the semester document (for total class count for this course)
+                try {
+                    const semDocRef = doc(db, semester, "attendance_summary"); // Use a consistent document ID for all semesters
+                    const semDocSnap = await getDoc(semDocRef);
+                    
+                    // If the document doesn't exist, create it with the course initialized to 0
+                    if (!semDocSnap.exists()) {
+                        await setDoc(semDocRef, { [course]: 0 });
+                    }
+                    
+                    // Increment the total class count for the course
+                    const semUpdate = {};
+                    semUpdate[course] = increment(1);  // Increase total classes for course in semester
+                    await updateDoc(semDocRef, semUpdate);
+                    console.log('Semester document updated');
+                } catch (error) {
+                    console.error('Error updating semester document:', error);
+                    throw error;
+                }
+                
+                alert('Attendance submitted successfully!');
+                // Optionally, clear selections or refresh UI; here we hide course & student list.
+                document.getElementById('semester').value = '';
+                document.getElementById('course').value = '';
+                document.getElementById('courseGroup').classList.add('hidden');
+                document.getElementById('studentList').classList.add('hidden');
+                
+            } catch (error) {
+                console.error("Error submitting attendance:", error);
+                alert(`Failed to submit attendance: ${error.message}`);
+            } finally {
+                const submitButton = document.getElementById('submitAttendance');
+                submitButton.textContent = 'Submit Attendance';
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
